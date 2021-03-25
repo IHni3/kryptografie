@@ -1,0 +1,27 @@
+plugins {
+    id 'java-library'
+}
+
+group 'dhbw'
+version null
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+    // https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path
+    implementation group: 'com.jayway.jsonpath', name: 'json-path', version: '2.5.0'
+}
+
+task build_jar(type: Jar) {
+    project.archivesBaseName = "ShiftBase"
+
+    manifest {
+        attributes["Main-Class"] = "ShiftBase"
+    }
+
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
