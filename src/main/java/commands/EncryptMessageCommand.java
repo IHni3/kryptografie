@@ -23,11 +23,11 @@ public class EncryptMessageCommand implements ICommand{
     public String execute() throws CommandExecutionException {
         switch (algorithm)
         {
-            case RSABASE -> {
-                return callJarEncrypt(Configuration.instance.pathToRSABaseJavaArchive, "RSABase", this.message, this.keyfile);
+            case RSA -> {
+                return callJarEncrypt(Configuration.instance.pathToRSABaseJavaArchive, "Rsa", this.message, this.keyfile);
             }
-            case SHIFTBASE -> {
-                return callJarEncrypt(Configuration.instance.pathToShiftBaseJavaArchive, "ShiftBase", this.message, this.keyfile);
+            case SHIFT -> {
+                return callJarEncrypt(Configuration.instance.pathToShiftBaseJavaArchive, "Shift", this.message, this.keyfile);
             }
             default -> throw new CommandExecutionException("Unsupported Algorithm!");
         }

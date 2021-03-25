@@ -48,11 +48,13 @@ public class Controller {
 
         try {
             ICommand command = parser.parse(inputString);
-            command.execute();
+            var result = command.execute();
+            displayText(result);
         } catch (ParserException e) {
             e.printStackTrace();
             //TODO
         } catch (CommandExecutionException e) {
+            displayText("Could not parse command!");
             e.printStackTrace();
         }
 

@@ -1,6 +1,6 @@
 import java.io.File;
 
-public interface IShiftBase {
+public interface IShift {
     String version();
 
     String encrypt(String plainMessage, File keyfile);

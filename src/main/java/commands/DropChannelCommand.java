@@ -1,6 +1,6 @@
 package commands;
 
-import database.MSADBService;
+import database.DBService;
 
 public class DropChannelCommand implements ICommand{
     private String channelName;
@@ -10,7 +10,7 @@ public class DropChannelCommand implements ICommand{
 
     @Override
     public String execute() throws CommandExecutionException {
-        var result = MSADBService.instance.getChannels().stream().filter(c -> c.getName().equals(channelName));
+        var result = DBService.instance.getChannels().stream().filter(c -> c.getName().equals(channelName));
 
         if (result.count() == 0){
             throw new CommandExecutionException(String.format("unknown channel %s", channelName));

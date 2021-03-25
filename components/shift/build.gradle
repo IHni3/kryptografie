@@ -16,10 +16,10 @@ dependencies {
 }
 
 task build_jar(type: Jar) {
-    project.archivesBaseName = "ShiftBase"
+    project.archivesBaseName = "shift"
 
     manifest {
-        attributes["Main-Class"] = "ShiftBase"
+        attributes["Main-Class"] = "Shift"
     }
 
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }

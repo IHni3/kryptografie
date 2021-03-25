@@ -1,10 +1,9 @@
-import database.HSQLDB;
-import database.MSADBService;
+import database.DBService;
 import gui.GUI;
 
 public class Application {
 
-    MSADBService dbService = MSADBService.instance;
+    DBService dbService = DBService.instance;
 
     public static void main(String[] args) {
 

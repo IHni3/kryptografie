@@ -9,24 +9,24 @@ import java.util.Scanner;
 import logging.Logger;
 import logging.LoggingUtils;
 
-public class RSABase {
-    private static RSABase instance = new RSABase();
+public class Rsa {
+    private static Rsa instance = new Rsa();
     public Port port;
     private Key key;
 
     //logger
     private Logger logger = new Logger();
 
-    private RSABase() {
+    private Rsa() {
         port = new Port();
     }
 
-    public static RSABase getInstance() {
+    public static Rsa getInstance() {
         return instance;
     }
 
     private String encryptMessage(String plainMessage, File publicKeyfile) throws FileNotFoundException {
-        LoggingUtils.prepareLogger(logger,"encrypt", "rsabase");
+        LoggingUtils.prepareLogger(logger,"encrypt", "rsa");
         logger.printInfo("It works!!");
 
 
@@ -38,7 +38,7 @@ public class RSABase {
     }
 
     private String decryptMessage(String encryptedMessage, File privateKeyfile) throws FileNotFoundException {
-        LoggingUtils.prepareLogger(logger,"decrypt", "rsabase");
+        LoggingUtils.prepareLogger(logger,"decrypt", "rsa");
         logger.printInfo("It works!!");
 
 
@@ -93,7 +93,7 @@ public class RSABase {
         logger.enable();
     }
 
-    public class Port implements IRSABase {
+    public class Port implements IRsa {
         @Override
         public String version() {
             return null;

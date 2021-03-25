@@ -14,7 +14,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum MSADBService implements IMSADBService {
+public enum DBService implements IDBService {
     instance;
 
     private HSQLDB db = HSQLDB.instance;

@@ -6,9 +6,9 @@ import org.json.simple.parser.JSONParser;
 import java.io.*;
 
 
-public class ShiftBase {
+public class Shift {
     // static instance
-    private static final ShiftBase instance = new ShiftBase();
+    private static final Shift instance = new Shift();
 
     //logger
     private Logger logger = new Logger();
@@ -21,18 +21,18 @@ public class ShiftBase {
     String encryptedMessage;
 
     // private constructor
-    private ShiftBase() {
+    private Shift() {
         port = new Port();
     }
 
     // static method getInstance
-    public static ShiftBase getInstance() {
+    public static Shift getInstance() {
         return instance;
     }
 
     // inner methods
     public String innerVersion() {
-        return "ShiftBase";
+        return "Shift";
     }
 
 
@@ -95,7 +95,7 @@ public class ShiftBase {
 
 
     // inner class port
-    public class Port implements IShiftBase {
+    public class Port implements IShift {
         @Override
         public String version() {
             return innerVersion();

@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 import configuration.AlgorithmType;
-import database.MSADBService;
+import database.DBService;
 import models.ModelStorage;
 import models.Transmission;
 import models.dbModels.DBMessage;
@@ -33,7 +33,7 @@ public class SendMessageCommand implements ICommand{
             throw new CommandExecutionException(String.format("no valid channel from %s to %s", sender, recipient));
         }
 
-        var participants = MSADBService.instance.getParticipants();
+        var participants = DBService.instance.getParticipants();
         var senderPart = participants.stream().filter(p -> p.getName().equals(sender)).collect(Collectors.toList()).get(0);
         var recieverPart = participants.stream().filter(p -> p.getName().equals(recipient)).collect(Collectors.toList()).get(0);
 
@@ -45,7 +45,7 @@ public class SendMessageCommand implements ICommand{
         var channel = channelResults.collect(Collectors.toList()).get(0);
         channel.send(new Transmission(dbMessage));
 
-        MSADBService.instance.insertMessage(dbMessage);
+        DBService.instance.insertMessage(dbMessage);
 
         return null;
     }

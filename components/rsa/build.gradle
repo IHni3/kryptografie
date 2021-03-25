@@ -14,10 +14,10 @@ dependencies {
 }
 
 task build_jar(type: Jar) {
-    project.archivesBaseName = "RSACracker"
+    project.archivesBaseName = "rsa"
 
     manifest {
-        attributes["Main-Class"] = "RSACracker"
+        attributes["Main-Class"] = "Rsa"
     }
 
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }

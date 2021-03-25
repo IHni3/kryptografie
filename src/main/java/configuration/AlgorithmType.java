@@ -1,5 +1,5 @@
 package configuration;
 
 public enum AlgorithmType {
-    SHIFTBASE, RSABASE, SHIFTCRACKER, RSACRACKER
+    SHIFT, RSA, SHIFTCRACKER, RSACRACKER
 }

@@ -12,21 +12,22 @@ public enum Configuration {
     // Keyfile Directory
     public final String keyFilesDirectory = userDirectory + fileSeparator + "keyfiles";
 
-    // ShiftBase
-    public final String pathToShiftBaseJavaArchive = commonPathToJavaArchive + "shiftBase" + fileSeparator + "build"
-            + fileSeparator + "libs" + fileSeparator + "ShiftBase.jar";
+    // Shift
+    public final String pathToShiftBaseJavaArchive = commonPathToJavaArchive + "shift" + fileSeparator + "build"
+            + fileSeparator + "libs" + fileSeparator + "shift.jar";
 
     // ShiftCracker
-    public final String pathToShiftCrackerJavaArchive = commonPathToJavaArchive + "shiftCracker" + fileSeparator + "build"
-            + fileSeparator + "libs" + fileSeparator + "ShiftCracker.jar";
+    public final String pathToShiftCrackerJavaArchive = commonPathToJavaArchive + "shift_cracker" + fileSeparator + "build"
+            + fileSeparator + "libs" + fileSeparator + "shift_cracker.jar";
 
     // RSABase
-    public final String pathToRSABaseJavaArchive = commonPathToJavaArchive + "rsaBase" + fileSeparator + "build"
-            + fileSeparator + "libs" + fileSeparator + "RSABase.jar";
+    public final String pathToRSABaseJavaArchive = commonPathToJavaArchive + "rsa" + fileSeparator + "build"
+            + fileSeparator + "libs" + fileSeparator + "rsa.jar";
 
     // RSACracker
-    public final String pathToRSACrackerJavaArchive = commonPathToJavaArchive + "rsaCracker" + fileSeparator + "build"
-            + fileSeparator + "libs" + fileSeparator + "RSACracker.jar";
+    public final String pathToRSACrackerJavaArchive = commonPathToJavaArchive + "rsa_" +
+            "cracker" + fileSeparator + "build"
+            + fileSeparator + "libs" + fileSeparator + "rsa_cracker.jar";
 
 
 

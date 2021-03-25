@@ -6,23 +6,23 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-public class RSACracker {
-    private static RSACracker instance = new RSACracker();
+public class RsaCracker {
+    private static RsaCracker instance = new RsaCracker();
 
     private BigInteger e = BigInteger.ZERO;
     private BigInteger n = BigInteger.ZERO;
 
     public Port port;
 
-    private RSACracker() {
+    private RsaCracker() {
         port = new Port();
     }
 
-    public static RSACracker getInstance() {
+    public static RsaCracker getInstance() {
         return instance;
     }
 
-    public class Port implements IRSACracker {
+    public class Port implements IRsaCracker {
         @Override
         public String version() {
             return null;
@@ -44,7 +44,7 @@ public class RSACracker {
                 return "";
             byte[] plainBytes = plain.toByteArray();
             return new String(plainBytes);
-        } catch (RSACrackingException rsae) {
+        } catch (RsaCrackingException rsae) {
             System.out.println(rsae.getMessage());
         }
         return null;
@@ -77,7 +77,7 @@ public class RSACracker {
         return new BigInteger(line);
     }
 
-    private BigInteger execute(BigInteger cipher) throws RSACrackingException {
+    private BigInteger execute(BigInteger cipher) throws RsaCrackingException {
         BigInteger p, q, d;
         List<BigInteger> factorList = factorize(n);
 
@@ -85,7 +85,7 @@ public class RSACracker {
             return null;
 
         if (factorList.size() != 2) {
-            throw new RSACrackingException("cannot determine factors p and q");
+            throw new RsaCrackingException("cannot determine factors p and q");
         }
 
         p = factorList.get(0);

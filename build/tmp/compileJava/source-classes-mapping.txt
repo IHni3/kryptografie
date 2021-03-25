@@ -6,10 +6,8 @@ configuration/Configuration.java
  configuration.Configuration
 commands/ShowChannelCommand.java
  commands.ShowChannelCommand
-network/Transmission.java
- network.Transmission
-commands/SendMessageCommand.java
- commands.SendMessageCommand
+commands/DropChannelCommand.java
+ commands.DropChannelCommand
 filesystem/FileSystemUtils.java
  filesystem.FileSystemUtils
 commands/RegisterParticipantCommand.java
@@ -22,23 +20,21 @@ commands/CreateChannelCommand.java
  commands.CreateChannelCommand
 commands/ICommand.java
  commands.ICommand
-network/Participant.java
- network.Participant
 commands/ShowAlgorithmCommand.java
  commands.ShowAlgorithmCommand
+models/dbModels/DBParticipant.java
+ models.dbModels.DBParticipant
 logging/LoggingUtils.java
  logging.LoggingUtils
 parser/SendMessageParser.java
  parser.SendMessageParser
-database/models/PostboxMessage.java
- database.models.PostboxMessage
+models/dbModels/DBPostboxMessage.java
+ models.dbModels.DBPostboxMessage
 commands/CrackMessageCommand.java
  commands.CrackMessageCommand
  commands.CrackMessageCommand$Task
 parser/DropChannelParser.java
  parser.DropChannelParser
-database/models/Message.java
- database.models.Message
 logging/Logger.java
  logging.Logger
 parser/Parser.java
@@ -47,74 +43,70 @@ parser/ParserException.java
  parser.ParserException
 database/IMSADBService.java
  database.IMSADBService
-gui/GUI.java
- gui.GUI
- gui.GUI$1
-network/Network.java
- network.Network
+commands/SendMessageCommand.java
+ commands.SendMessageCommand
+models/dbModels/DBChannel.java
+ models.dbModels.DBChannel
 parser/ShowChannelParser.java
  parser.ShowChannelParser
 Application.java
  Application
-database/models/Participant.java
- database.models.Participant
-components/ComponentUtils.java
- components.ComponentUtils
+commands/CommandUtils.java
+ commands.CommandUtils
 parser/IntrudeChannelParser.java
  parser.IntrudeChannelParser
-configuration/AlgorithmType.java
- configuration.AlgorithmType
+commands/CommandExecutionException.java
+ commands.CommandExecutionException
 configuration/ExecutionType.java
  configuration.ExecutionType
-network/INetwork.java
- network.INetwork
-network/Channel.java
- network.Channel
-network/IChannel.java
- network.IChannel
+models/Transmission.java
+ models.Transmission
+models/ModelStorage.java
+ models.ModelStorage
 parser/CrackRsaParser.java
  parser.CrackRsaParser
 logging/LogLevel.java
  logging.LogLevel
-commands/EncryptMessageCommand.java
- commands.EncryptMessageCommand
- commands.EncryptMessageCommand$1
- commands.EncryptMessageCommand$UnsupportedAlgorithmException
-parser/EncryptParser.java
- parser.EncryptParser
+database/DBConfiguration.java
+ database.DBConfiguration
+models/Participant.java
+ models.Participant
+parser/IParser.java
+ parser.IParser
 commands/CrackMessageRsaCommand.java
  commands.CrackMessageRsaCommand
-commands/IntruderChannelCommand.java
- commands.IntruderChannelCommand
-database/models/Channel.java
- database.models.Channel
-parser/ParserUtils.java
- parser.ParserUtils
-network/ParticipantIntruder.java
- network.ParticipantIntruder
+commands/IntrudeChannelCommand.java
+ commands.IntrudeChannelCommand
+models/Channel.java
+ models.Channel
+models/dbModels/DBMessage.java
+ models.dbModels.DBMessage
+components/ComponentUtils.java
+ components.ComponentUtils
 parser/CrackShiftParser.java
  parser.CrackShiftParser
 parser/RegisterParticipantParser.java
  parser.RegisterParticipantParser
 parser/CreateChannelParser.java
  parser.CreateChannelParser
-commands/CommandUtils.java
- commands.CommandUtils
-network/ParticipantDefault.java
- network.ParticipantDefault
+commands/EncryptMessageCommand.java
+ commands.EncryptMessageCommand
+ commands.EncryptMessageCommand$1
+ commands.EncryptMessageCommand$UnsupportedAlgorithmException
+configuration/AlgorithmType.java
+ configuration.AlgorithmType
+parser/ParserUtils.java
+ parser.ParserUtils
 commands/DecryptMessageCommand.java
  commands.DecryptMessageCommand
  commands.DecryptMessageCommand$1
  commands.DecryptMessageCommand$UnsupportedAlgorithmException
-parser/IParser.java
- parser.IParser
-commands/CommandExecutionException.java
- commands.CommandExecutionException
-commands/DropChannelCommand.java
- commands.DropChannelCommand
-gui/Controller.java
- gui.Controller
 parser/DecryptParser.java
  parser.DecryptParser
-database/DBConfiguration.java
- database.DBConfiguration
+parser/EncryptParser.java
+ parser.EncryptParser
+gui/Controller.java
+ gui.Controller
+gui/GUI.java
+ gui.GUI
+ gui.GUI$1
