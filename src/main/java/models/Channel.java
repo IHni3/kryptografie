@@ -1,7 +1,12 @@
+/*
+ * Copyright (c) 2021.
+ * Author 6143217
+ * All rights reserved
+ */
+
 package models;
 
 import com.google.common.eventbus.EventBus;
-import models.dbModels.DBChannel;
 
 public class Channel {
 

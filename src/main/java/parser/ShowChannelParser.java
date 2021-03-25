@@ -1,10 +1,13 @@
+/*
+ * Copyright (c) 2021.
+ * Author 6143217
+ * All rights reserved
+ */
+
 package parser;
 
-import commands.CreateChannelCommand;
 import commands.ICommand;
-import commands.RegisterParticipantCommand;
 import commands.ShowChannelCommand;
-import configuration.ParticipantType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

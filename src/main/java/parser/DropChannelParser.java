@@ -1,6 +1,11 @@
+/*
+ * Copyright (c) 2021.
+ * Author 6143217
+ * All rights reserved
+ */
+
 package parser;
 
-import commands.CrackMessageShiftCommand;
 import commands.DropChannelCommand;
 import commands.ICommand;
 

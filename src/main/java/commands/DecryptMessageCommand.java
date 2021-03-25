@@ -1,8 +1,15 @@
+/*
+ * Copyright (c) 2021.
+ * Author 6143217
+ * All rights reserved
+ */
+
 package commands;
 
 import components.ComponentUtils;
 import configuration.AlgorithmType;
 import configuration.Configuration;
+
 import java.io.File;
 
 public class DecryptMessageCommand implements ICommand{

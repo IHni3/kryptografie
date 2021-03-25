@@ -1,8 +1,13 @@
+/*
+ * Copyright (c) 2021.
+ * Author 6143217
+ * All rights reserved
+ */
+
 package parser;
 
 import commands.ICommand;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

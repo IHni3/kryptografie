@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2021.
+ * Author 6143217
+ * All rights reserved
+ */
+
 package gui;
 
 
@@ -5,7 +11,6 @@ import commands.CommandExecutionException;
 import commands.ICommand;
 import configuration.Configuration;
 import filesystem.FileSystemUtils;
-import logging.Logger;
 import parser.IParser;
 import parser.Parser;
 import parser.ParserException;

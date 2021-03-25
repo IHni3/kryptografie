@@ -1,13 +1,19 @@
-package commands;
+/*
+ * Copyright (c) 2021.
+ * Author 6143217
+ * All rights reserved
+ */
 
-import java.util.Date;
-import java.util.stream.Collectors;
+package commands;
 
 import configuration.AlgorithmType;
 import database.DBService;
 import models.ModelStorage;
 import models.Transmission;
 import models.dbModels.DBMessage;
+
+import java.util.Date;
+import java.util.stream.Collectors;
 
 public class SendMessageCommand implements ICommand{
 

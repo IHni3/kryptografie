@@ -1,3 +1,5 @@
+import logging.Logger;
+import logging.LoggingUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -5,9 +7,6 @@ import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.Scanner;
-
-import logging.Logger;
-import logging.LoggingUtils;
 
 public class Rsa {
     private static Rsa instance = new Rsa();

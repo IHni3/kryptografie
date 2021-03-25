@@ -1,8 +1,13 @@
+/*
+ * Copyright (c) 2021.
+ * Author 6143217
+ * All rights reserved
+ */
+
 package parser;
 
 import commands.DecryptMessageCommand;
 import commands.ICommand;
-import configuration.AlgorithmType;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

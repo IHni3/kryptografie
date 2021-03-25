@@ -1,6 +1,10 @@
-package logging;
+/*
+ * Copyright (c) 2021.
+ * Author 6143217
+ * All rights reserved
+ */
 
-import logging.LogLevel;
+package logging;
 
 import java.io.PrintStream;
 import java.time.LocalDateTime;

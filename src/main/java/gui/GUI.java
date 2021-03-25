@@ -1,6 +1,11 @@
+/*
+ * Copyright (c) 2021.
+ * Author 6143217
+ * All rights reserved
+ */
+
 package gui;
 
-import configuration.Configuration;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;

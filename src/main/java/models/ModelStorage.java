@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2021.
+ * Author 6143217
+ * All rights reserved
+ */
+
 package models;
 
 import java.util.ArrayList;

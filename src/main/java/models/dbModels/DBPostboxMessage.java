@@ -1,6 +1,10 @@
-package models.dbModels;
+/*
+ * Copyright (c) 2021.
+ * Author 6143217
+ * All rights reserved
+ */
 
-import models.dbModels.DBParticipant;
+package models.dbModels;
 
 public class DBPostboxMessage {
     private final DBParticipant participantSender;
