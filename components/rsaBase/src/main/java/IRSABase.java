@@ -7,4 +7,6 @@ public interface IRSABase {
     String encrypt(String plainMessage, File publicKeyfile) throws FileNotFoundException;
 
     String decrypt(String encryptedMessage, File privateKeyfile) throws FileNotFoundException;
+
+    void enableDebuggingMode();
 }

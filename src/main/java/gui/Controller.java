@@ -1,11 +1,15 @@
 package gui;
 
 
+import commands.CommandExecutionException;
 import commands.ICommand;
 import configuration.Configuration;
+import logging.Logger;
 import parser.IParser;
 import parser.Parser;
 import parser.ParserException;
+
+import java.io.File;
 
 public class Controller {
 
@@ -30,14 +34,14 @@ public class Controller {
 
     }
 
-    public void disableLogging(){
+    public void disableDebugging(){
         displayText("Logging turned: On");
-        configuration.enableLogging();
+        configuration.instance.debugModeEnabled = false;
     }
 
-    public void enableLogging(){
+    public void enableDebugging(){
         displayText("Logging turned: Off");
-        configuration.disableLogging();
+        configuration.instance.debugModeEnabled = true;
     }
 
     public void executeCommand(String inputString){
@@ -45,14 +49,16 @@ public class Controller {
         try {
             ICommand command = parser.parse(inputString);
             command.execute();
-        } catch (ParserException ex) {
-            ex.printStackTrace();
+        } catch (ParserException e) {
+            e.printStackTrace();
             //TODO
+        } catch (CommandExecutionException e) {
+            e.printStackTrace();
         }
 
     }
 
-    public boolean isLoggingEnabled(){
-        return true;
+    public boolean isDebuggingEnabled(){
+        return Configuration.instance.debugModeEnabled;
     }
 }

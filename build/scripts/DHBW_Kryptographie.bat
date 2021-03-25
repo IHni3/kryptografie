@@ -67,7 +67,7 @@ goto fail
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\DHBW_Kryptographie-1.0-SNAPSHOT.jar;%APP_HOME%\lib\hsqldb-2.5.0.jar;%APP_HOME%\lib\guava-11.0.2.jar;%APP_HOME%\lib\javafx-fxml-15.0.1-win.jar;%APP_HOME%\lib\javafx-controls-15.0.1-win.jar;%APP_HOME%\lib\javafx-controls-15.0.1.jar;%APP_HOME%\lib\javafx-graphics-15.0.1-win.jar;%APP_HOME%\lib\javafx-graphics-15.0.1.jar;%APP_HOME%\lib\javafx-base-15.0.1-win.jar;%APP_HOME%\lib\javafx-base-15.0.1.jar;%APP_HOME%\lib\jsr305-1.3.9.jar
+set CLASSPATH=%APP_HOME%\lib\DHBW_Kryptographie-1.0-SNAPSHOT.jar;%APP_HOME%\lib\hsqldb-2.5.0.jar;%APP_HOME%\lib\guava-11.0.2.jar;%APP_HOME%\lib\json-simple-1.1.1.jar;%APP_HOME%\lib\javafx-fxml-15.0.1-win.jar;%APP_HOME%\lib\javafx-controls-15.0.1-win.jar;%APP_HOME%\lib\javafx-controls-15.0.1.jar;%APP_HOME%\lib\javafx-graphics-15.0.1-win.jar;%APP_HOME%\lib\javafx-graphics-15.0.1.jar;%APP_HOME%\lib\javafx-base-15.0.1-win.jar;%APP_HOME%\lib\javafx-base-15.0.1.jar;%APP_HOME%\lib\jsr305-1.3.9.jar;%APP_HOME%\lib\junit-4.10.jar;%APP_HOME%\lib\hamcrest-core-1.1.jar
 
 
 @rem Execute DHBW_Kryptographie

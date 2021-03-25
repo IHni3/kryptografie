@@ -28,7 +28,7 @@ public class DecryptMessageCommand implements ICommand{
             case SHIFTBASE -> {
                 return callJarEncrypt(Configuration.instance.pathToShiftBaseJavaArchive, "ShiftBase", this.message, this.keyfile);
             }
-            default -> throw new CommandExecutionException();
+            default -> throw new CommandExecutionException("Unsupported algorithm!");
         }
     }
 
@@ -47,11 +47,16 @@ public class DecryptMessageCommand implements ICommand{
     private String callJarEncrypt(String jarPath, String className, String message, String keyfile) throws CommandExecutionException {
         try {
             var port = ComponentUtils.getPortFromJar(jarPath,className);
+
+            if(Configuration.instance.debugModeEnabled) {
+                var loggingEnableMethod = port.getClass().getDeclaredMethod("enableDebuggingMode");
+                loggingEnableMethod.invoke(port);
+            }
+
             var method = port.getClass().getDeclaredMethod("decrypt",String.class, File.class);
             return (String) method.invoke(port, message, new File(Configuration.instance.keyFilesDirectory + Configuration.instance.fileSeparator + keyfile));
         } catch (Exception exception) {
-            Configuration.instance.logger.printError(exception.getStackTrace().toString());
-            throw new CommandExecutionException();
+            throw new CommandExecutionException("Calling method of component failed!", exception);
         }
     }
 

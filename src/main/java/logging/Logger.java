@@ -1,21 +1,40 @@
 package logging;
 
+import logging.LogLevel;
+
+import java.io.PrintStream;
 import java.time.LocalDateTime;
 
 public class Logger {
-    private LogLevel curLogLevel = LogLevel.ERROR;
-    private java.io.PrintStream output;
+    //private LogLevel curLogLevel = LogLevel.ERROR;
+
+    private PrintStream output;
     private boolean enabled = true;
 
-    public Logger(java.io.PrintStream output) {
+    public Logger(PrintStream output) {
         this.output = output;
+    }
+    public Logger() {
     }
 
     public void print(String outputString, LogLevel logLevel) {
-        if(enabled && curLogLevel.getValue() <= logLevel.getValue()) {
+
+        if(!enabled) {
+            return;
+        }
+
+        if(this.output == null) {
+            throw new RuntimeException("no output set");
+        }
+
+        //if(curLogLevel.getValue() <= logLevel.getValue()) {
             var datetime = LocalDateTime.now();
             output.println("[" + datetime.toString() + "] [" + logLevel.name() + "]: " + outputString);
-        }
+        //}
+    }
+
+    public void setOutput(PrintStream output) {
+        this.output = output;
     }
 
     public void printError(String outputString) {
@@ -39,5 +58,9 @@ public class Logger {
     }
     public void disable() {
         enabled = false;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 }

@@ -2,6 +2,9 @@ package commands;
 
 import configuration.Configuration;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 public class CrackMessageShiftCommand extends CrackMessageCommand {
 
     public CrackMessageShiftCommand(String message) {
@@ -9,8 +12,13 @@ public class CrackMessageShiftCommand extends CrackMessageCommand {
     }
 
     @Override
-    public String execute() throws CommandExecutionException {
-        return super.execute();
+    protected Method onConstructMethod(Object port) throws NoSuchMethodException {
+        return  port.getClass().getDeclaredMethod("decrypt", String.class);
+    }
+
+    @Override
+    protected Object onMethodInvoke(Object port, Method method) throws InvocationTargetException, IllegalAccessException {
+        return method.invoke(port, getMessage());
     }
 
     @Override
