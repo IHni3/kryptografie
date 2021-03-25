@@ -1,10 +1,10 @@
-package database.models;
+package models.dbModels;
 
-public class Participant {
+public class DBParticipant {
     private final String name;
     private final String type;
 
-    public Participant(String name, String type){
+    public DBParticipant(String name, String type){
         this.name = name;
         this.type = type;
     }

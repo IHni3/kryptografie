@@ -1,23 +1,25 @@
-package database.models;
+package models.dbModels;
 
-public class PostboxMessage {
-    private final Participant participantSender;
-    private final Participant participantReceiver;
+import models.dbModels.DBParticipant;
+
+public class DBPostboxMessage {
+    private final DBParticipant participantSender;
+    private final DBParticipant participantReceiver;
     private final String message;
     private final String timestamp;
 
-    public PostboxMessage(Participant participantSender, Participant participantReceiver, String message, String timestamp){
+    public DBPostboxMessage(DBParticipant participantSender, DBParticipant participantReceiver, String message, String timestamp){
         this.participantSender = participantSender;
         this.participantReceiver = participantReceiver;
         this.message = message;
         this.timestamp = timestamp;
     }
 
-    public Participant getParticipantSender() {
+    public DBParticipant getParticipantSender() {
         return participantSender;
     }
 
-    public Participant getParticipantReceiver() {
+    public DBParticipant getParticipantReceiver() {
         return participantReceiver;
     }
 
