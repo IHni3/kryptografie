@@ -1,17 +1,15 @@
 package logging;
 
-import logging.LogLevel;
-
 import java.io.PrintStream;
 import java.time.LocalDateTime;
 
 public class Logger {
     //private LogLevel curLogLevel = LogLevel.ERROR;
 
-    private PrintStream output;
+    private java.io.PrintStream output;
     private boolean enabled = true;
 
-    public Logger(PrintStream output) {
+    public Logger(java.io.PrintStream output) {
         this.output = output;
     }
     public Logger() {

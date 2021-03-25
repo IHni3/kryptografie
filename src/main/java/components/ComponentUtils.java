@@ -32,7 +32,7 @@ public class ComponentUtils {
             var instance = getInstanceOfClass(clazz);
             return getPortOfClass(clazz, instance);
         } catch (Exception exception) {
-            Configuration.instance.logger.printCritical(exception.getStackTrace().toString());
+            Configuration.instance.getLogger().printCritical(exception.getStackTrace().toString());
             throw new InvalidObjectException("getting port from jar failed!");
         }
     }

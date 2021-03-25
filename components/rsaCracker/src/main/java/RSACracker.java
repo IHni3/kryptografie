@@ -6,10 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-//-------------------
-//  Author: 4775194
-//-------------------
-
 public class RSACracker {
     private static RSACracker instance = new RSACracker();
 

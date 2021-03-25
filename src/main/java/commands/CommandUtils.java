@@ -1,8 +1,8 @@
 package commands;
 
-public class CommandUtil {
+public class CommandUtils {
 
-    private CommandUtil(){
+    private CommandUtils(){
 
     }
 

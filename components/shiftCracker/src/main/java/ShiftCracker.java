@@ -1,10 +1,6 @@
 
 import java.text.DecimalFormat;
 
-//-------------------
-//  Author: 4775194
-//-------------------
-
 public class ShiftCracker {
     // static instance
     private static final ShiftCracker instance = new ShiftCracker();

@@ -1,3 +1,4 @@
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigInteger;
@@ -5,10 +6,16 @@ import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.Scanner;
 
+import logging.Logger;
+import logging.LoggingUtils;
+
 public class RSABase {
     private static RSABase instance = new RSABase();
     public Port port;
     private Key key;
+
+    //logger
+    private Logger logger = new Logger();
 
     private RSABase() {
         port = new Port();
@@ -19,6 +26,10 @@ public class RSABase {
     }
 
     private String encryptMessage(String plainMessage, File publicKeyfile) throws FileNotFoundException {
+        LoggingUtils.prepareLogger(logger,"encrypt", "rsabase");
+        logger.printInfo("It works!!");
+
+
         readPublicKeyFile(publicKeyfile);
 
         byte[] bytes = plainMessage.getBytes(Charset.defaultCharset());
@@ -27,6 +38,10 @@ public class RSABase {
     }
 
     private String decryptMessage(String encryptedMessage, File privateKeyfile) throws FileNotFoundException {
+        LoggingUtils.prepareLogger(logger,"decrypt", "rsabase");
+        logger.printInfo("It works!!");
+
+
         readPrivateKeyFile(privateKeyfile);
 
         byte[] cipher = Base64.getDecoder().decode(encryptedMessage);
@@ -74,6 +89,10 @@ public class RSABase {
         return new BigInteger(line);
     }
 
+    private void innerEnabledDebuggingMode() {
+        logger.enable();
+    }
+
     public class Port implements IRSABase {
         @Override
         public String version() {
@@ -88,6 +107,11 @@ public class RSABase {
         @Override
         public String decrypt(String encryptedMessage, File privateKeyfile) throws FileNotFoundException {
             return decryptMessage(encryptedMessage, privateKeyfile);
+        }
+
+        @Override
+        public void enableDebuggingMode() {
+            innerEnabledDebuggingMode();
         }
     }
 }

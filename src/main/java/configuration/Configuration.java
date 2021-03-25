@@ -41,8 +41,16 @@ public enum Configuration {
 
     // Log-Directory
     public final String logsDirectory = userDirectory + fileSeparator + "log";
+    public boolean debugModeEnabled = false;
 
-    public final Logger logger = new Logger(System.out);
+    private Logger logger = new Logger(System.out);
+
+    public void setLogger(Logger logger){
+        this.logger = logger;
+    }
+    public Logger getLogger(){
+        return logger;
+    }
 
 
     public void enableLogging(){

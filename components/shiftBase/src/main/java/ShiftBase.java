@@ -1,17 +1,17 @@
+import logging.Logger;
+import logging.LoggingUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import java.io.File;
-import java.io.FileReader;
-
-//-------------------
-//  Author: 4775194
-//-------------------
+import java.io.*;
 
 
 public class ShiftBase {
     // static instance
     private static final ShiftBase instance = new ShiftBase();
+
+    //logger
+    private Logger logger = new Logger();
 
     // port
     public Port port;
@@ -38,6 +38,9 @@ public class ShiftBase {
 
     //Encrypt Message with Key from JSON File
     private String innerEncrypt(String plainMessage, File keyfile){
+        LoggingUtils.prepareLogger(logger,"encrypt", "shiftbase");
+        logger.printInfo("It works!!");
+
         this.key = readJsonFile(keyfile);
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -52,6 +55,9 @@ public class ShiftBase {
 
     //Decrypt Message with Key from JSON File
     private String innerDecrypt(String encryptedMessage, File keyfile){
+        LoggingUtils.prepareLogger(logger,"decrypt", "shiftbase");
+        logger.printInfo("It works!!");
+
         this.key = readJsonFile(keyfile);
 
         StringBuilder stringBuilder = new StringBuilder();
@@ -68,7 +74,7 @@ public class ShiftBase {
     //Read JSON File into Integer Key
     private int readJsonFile(File keyfile){
         int key;
-        try{
+        try {
             FileReader reader = new FileReader(keyfile);
             JSONParser jsonParser = new JSONParser();
 
@@ -81,6 +87,11 @@ public class ShiftBase {
 
         return key;
     }
+
+    private void innerEnabledDebuggingMode() {
+        logger.enable();
+    }
+
 
 
     // inner class port
@@ -98,6 +109,11 @@ public class ShiftBase {
         @Override
         public String encrypt(String encryptedMessage, File keyfile) {
             return innerEncrypt(encryptedMessage, keyfile);
+        }
+
+        @Override
+        public void enableDebuggingMode() {
+            innerEnabledDebuggingMode();
         }
     }
 }
