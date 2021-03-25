@@ -30,6 +30,7 @@ database/models/PostboxMessage.java
  database.models.PostboxMessage
 commands/CrackMessageCommand.java
  commands.CrackMessageCommand
+ commands.CrackMessageCommand$Task
 parser/DropChannelParser.java
  parser.DropChannelParser
 database/models/Message.java
@@ -53,6 +54,8 @@ Application.java
  Application
 database/models/Participant.java
  database.models.Participant
+components/ComponentUtils.java
+ components.ComponentUtils
 parser/IntrudeChannelParser.java
  parser.IntrudeChannelParser
 configuration/AlgorithmType.java
@@ -72,6 +75,7 @@ logging/LogLevel.java
 commands/EncryptMessageCommand.java
  commands.EncryptMessageCommand
  commands.EncryptMessageCommand$1
+ commands.EncryptMessageCommand$UnsupportedAlgorithmException
 parser/EncryptParser.java
  parser.EncryptParser
 commands/CrackMessageRsaCommand.java
@@ -94,8 +98,12 @@ network/ParticipantDefault.java
  network.ParticipantDefault
 commands/DecryptMessageCommand.java
  commands.DecryptMessageCommand
+ commands.DecryptMessageCommand$1
+ commands.DecryptMessageCommand$UnsupportedAlgorithmException
 parser/IParser.java
  parser.IParser
+commands/CommandExecutionException.java
+ commands.CommandExecutionException
 commands/DropChannelCommand.java
  commands.DropChannelCommand
 gui/Controller.java

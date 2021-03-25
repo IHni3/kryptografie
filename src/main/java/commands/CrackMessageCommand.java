@@ -10,6 +10,7 @@ import java.util.concurrent.*;
 public abstract class CrackMessageCommand implements ICommand{
 
     private final String message;
+    private static final int MAX_EXECUTION_TIME = 30; //seconds
 
     public CrackMessageCommand(String message) {
         this.message = message;
@@ -25,12 +26,11 @@ public abstract class CrackMessageCommand implements ICommand{
         Future<String> future = executor.submit(new Task());
         String decryptedMessage = "";
         try {
-            decryptedMessage = future.get(30, TimeUnit.SECONDS);
+            decryptedMessage = future.get(MAX_EXECUTION_TIME, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             future.cancel(true);
         } catch (Exception e) {
-            Configuration.instance.logger.printError(e.getStackTrace().toString());
-            throw new CommandExecutionException();
+            throw new CommandExecutionException("Task execution failed!", e);
         }
 
         executor.shutdownNow();
@@ -45,7 +45,7 @@ public abstract class CrackMessageCommand implements ICommand{
             var decryptedMessage = String.valueOf(onMethodInvoke(port,method));
             return decryptedMessage;
         } catch (Exception exception) {
-            throw new CommandExecutionException();
+            throw new CommandExecutionException("Calling method of component failed!", exception);
         }
     }
 

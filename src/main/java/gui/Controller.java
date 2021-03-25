@@ -1,6 +1,7 @@
 package gui;
 
 
+import commands.CommandExecutionException;
 import commands.ICommand;
 import configuration.Configuration;
 import parser.IParser;
@@ -45,9 +46,11 @@ public class Controller {
         try {
             ICommand command = parser.parse(inputString);
             command.execute();
-        } catch (ParserException ex) {
-            ex.printStackTrace();
+        } catch (ParserException e) {
+            e.printStackTrace();
             //TODO
+        } catch (CommandExecutionException e) {
+            e.printStackTrace();
         }
 
     }
