@@ -7,14 +7,28 @@
 package commands;
 
 import configuration.ParticipantType;
+import database.DBService;
+import models.Participant;
 
 public class RegisterParticipantCommand implements ICommand{
-    public RegisterParticipantCommand(String nameStr, ParticipantType type) {
 
+    private String name;
+    private ParticipantType type;
+
+    public RegisterParticipantCommand(String name, ParticipantType type) {
+        this.name = name;
+        this.type = type;
     }
 
     @Override
-    public String execute() {
+    public String execute() throws CommandExecutionException {
+
+        if (DBService.instance.getOneParticipant(name) != null){
+            throw new CommandExecutionException(String.format("participant %s already exists, using existing postbox_%s", name));
+        }
+
+        Participant participant = new Participant(name, type.toString());
+        DBService.instance.insertParticipant(participant);
 
         return null;
     }

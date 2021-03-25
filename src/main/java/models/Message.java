@@ -4,18 +4,18 @@
  * All rights reserved
  */
 
-package models.dbModels;
+package models;
 
-public class DBMessage {
-    private final DBParticipant participantSender;
-    private final DBParticipant participantReceiver;
+public class Message {
+    private final Participant participantSender;
+    private final Participant participantReceiver;
     private final String algorithm;
     private final String keyfile;
     private final String timestamp;
     private final String plainMessage;
     private final String encryptedMessage;
 
-    public DBMessage(DBParticipant participantSender, DBParticipant participantReceiver, String algorithm, String keyfile, String timestamp, String plainMessage, String encryptedMessage){
+    public Message(Participant participantSender, Participant participantReceiver, String algorithm, String keyfile, String timestamp, String plainMessage, String encryptedMessage){
         this.participantSender = participantSender;
         this.participantReceiver = participantReceiver;
         this.algorithm = algorithm;
@@ -25,11 +25,11 @@ public class DBMessage {
         this.encryptedMessage = encryptedMessage;
     }
 
-    public DBParticipant getParticipantSender(){
+    public Participant getParticipantSender(){
         return this.participantSender;
     }
 
-    public DBParticipant getParticipantReceiver(){
+    public Participant getParticipantReceiver(){
         return this.participantReceiver;
     }
 

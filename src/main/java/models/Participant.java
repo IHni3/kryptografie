@@ -6,16 +6,20 @@
 
 package models;
 
-import com.google.common.eventbus.Subscribe;
-import models.dbModels.DBParticipant;
+public class Participant {
+    private final String name;
+    private final String type;
 
-public class Participant extends DBParticipant {
-    public  Participant(DBParticipant participant){
-        super(participant.getName(), participant.getName());
+    public Participant(String name, String type){
+        this.name = name;
+        this.type = type;
     }
 
-    @Subscribe
-    public void receive(){
+    public String getName() {
+        return name;
+    }
 
+    public String getType() {
+        return type;
     }
 }

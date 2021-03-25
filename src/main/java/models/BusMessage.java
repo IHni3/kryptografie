@@ -6,13 +6,13 @@
 
 package models;
 
-import models.dbModels.DBMessage;
+import configuration.AlgorithmType;
 
-public class Transmission {
+public class BusMessage {
 
     private String message;
     private String sender;
-    public  Transmission(DBMessage message){
+    public BusMessage(Message message){
         this.message = message.getEncryptedMessage();
         this.sender = message.getParticipantSender().getName();
     }

@@ -6,10 +6,10 @@
 
 package database;
 
-import models.dbModels.DBChannel;
-import models.dbModels.DBMessage;
-import models.dbModels.DBParticipant;
-import models.dbModels.DBPostboxMessage;
+import models.Channel;
+import models.Message;
+import models.Participant;
+import models.PostboxMessage;
 
 import java.util.List;
 
@@ -33,17 +33,17 @@ public interface IDBService {
 
     void insertMessage(String participantSender, String participantReceiver, String algorithm, String keyFile, String plainMessage, String encryptedMessage);
 
-    void insertMessage(DBMessage message);
+    void insertMessage(Message message);
 
     void insertParticipant(String name, String type);
 
-    void insertParticipant(DBParticipant participant);
+    void insertParticipant(Participant participant);
 
-    void insertChannel(DBChannel channel);
+    void insertChannel(Channel channel);
 
     void insertChannel(String name, String participantA, String participantB);
 
-    void insertPostboxMessage(DBPostboxMessage postboxMessage);
+    void insertPostboxMessage(PostboxMessage postboxMessage);
 
     void insertPostboxMessage(String participantSender, String participantReceiver, String message);
 
@@ -54,17 +54,17 @@ public interface IDBService {
 
     List<String> getTypes();
 
-    List<DBParticipant> getParticipants();
+    List<Participant> getParticipants();
 
-    List<DBChannel> getChannels();
+    List<Channel> getChannels();
 
-    List<DBPostboxMessage> getPostboxMessages(String participant);
+    List<PostboxMessage> getPostboxMessages(String participant);
 
-    DBChannel getOneChannel(String participantA, String participantB);
+    Channel getChannel(String participantA, String participantB);
 
     String getOneParticipantType(String participantName);
 
-    DBParticipant getOneParticipant(String participantName);
+    Participant getOneParticipant(String participantName);
 
 
     // Check for existence

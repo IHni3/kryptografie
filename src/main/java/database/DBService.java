@@ -6,10 +6,10 @@
 
 package database;
 
-import models.dbModels.DBChannel;
-import models.dbModels.DBMessage;
-import models.dbModels.DBParticipant;
-import models.dbModels.DBPostboxMessage;
+import models.Channel;
+import models.Message;
+import models.Participant;
+import models.PostboxMessage;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -98,7 +98,7 @@ public enum DBService implements IDBService {
     }
 
     @Override
-    public void insertMessage(DBMessage message) {
+    public void insertMessage(Message message) {
         insertMessage(message.getParticipantSender().getName(), message.getParticipantReceiver().getName(),
                 message.getPlainMessage(), message.getAlgorithm(), message.getEncryptedMessage(),
                 message.getKeyfile());
@@ -121,7 +121,7 @@ public enum DBService implements IDBService {
     }
 
     @Override
-    public void insertParticipant(DBParticipant participant) {
+    public void insertParticipant(Participant participant) {
         insertParticipant(participant.getName(), participant.getType());
     }
 
@@ -142,7 +142,7 @@ public enum DBService implements IDBService {
     }
 
     @Override
-    public void insertChannel(DBChannel channel) {
+    public void insertChannel(Channel channel) {
         insertChannel(channel.getName(), channel.getParticipantA().getName(),
                 channel.getParticipantB().getName());
     }
@@ -165,9 +165,19 @@ public enum DBService implements IDBService {
     }
 
     @Override
-    public void insertPostboxMessage(DBPostboxMessage postboxMessage) {
+    public void insertPostboxMessage(PostboxMessage postboxMessage) {
         insertPostboxMessage(postboxMessage.getParticipantReceiver().getName(),
                 postboxMessage.getParticipantSender().getName(), postboxMessage.getMessage());
+    }
+
+    public boolean removeChannel(String channelName){
+        var sql = String.format("DELETE FROM channel WHERE name='%s'", channelName);
+        try (Statement statement = conn.createStatement()) {
+            var affected = statement.executeUpdate(sql);
+            return affected != 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 
@@ -204,15 +214,15 @@ public enum DBService implements IDBService {
     }
 
     @Override
-    public List<DBParticipant> getParticipants() {
-        List<DBParticipant> participants = new ArrayList<>();
+    public List<Participant> getParticipants() {
+        List<Participant> participants = new ArrayList<>();
         try (Statement statement = conn.createStatement()) {
             String sqlStatement = "SELECT * from PARTICIPANTS";
             try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
                 while (resultSet.next()) {
                     String name = resultSet.getString("name");
                     String type = getTypeName(resultSet.getInt("type_id"));
-                    DBParticipant p = new DBParticipant(name, type);
+                    Participant p = new Participant(name, type);
                     participants.add(p);
                 }
             }
@@ -223,8 +233,8 @@ public enum DBService implements IDBService {
     }
 
     @Override
-    public List<DBChannel> getChannels() {
-        List<DBChannel> channelList = new ArrayList<>();
+    public List<Channel> getChannels() {
+        List<Channel> channelList = new ArrayList<>();
 
         try (Statement statement = conn.createStatement()) {
             String sqlStatement = "SELECT * from channel";
@@ -232,9 +242,9 @@ public enum DBService implements IDBService {
                 while (resultSet.next()) {
                     int participant1ID = resultSet.getInt("participant_01");
                     int participant2ID = resultSet.getInt("participant_02");
-                    DBParticipant participantA = getParticipant(participant1ID);
-                    DBParticipant participantB = getParticipant(participant2ID);
-                    channelList.add(getOneChannel(participantA.getName(), participantB.getName()));
+                    Participant participantA = getParticipant(participant1ID);
+                    Participant participantB = getParticipant(participant2ID);
+                    channelList.add(new Channel(resultSet.getString("name"), participantA, participantB));
                 }
             }
         } catch (SQLException sqlException) {
@@ -244,8 +254,8 @@ public enum DBService implements IDBService {
     }
 
     @Override
-    public List<DBPostboxMessage> getPostboxMessages(String participant) {
-        List<DBPostboxMessage> msgList = new ArrayList<>();
+    public List<PostboxMessage> getPostboxMessages(String participant) {
+        List<PostboxMessage> msgList = new ArrayList<>();
         if (!participantExists(participant)) {
             System.out.println("Couldn't get postbox message, participant wasn't found.");
         }
@@ -255,11 +265,11 @@ public enum DBService implements IDBService {
                 while (resultSet.next()) {
                     int partFromID = resultSet.getInt("participant_from_id");
                     String partFromName = getParticipantName(partFromID);
-                    DBParticipant partFrom = new DBParticipant(partFromName, getOneParticipantType(partFromName));
-                    DBParticipant partTo = new DBParticipant(participant, getOneParticipantType(participant));
+                    Participant partFrom = new Participant(partFromName, getOneParticipantType(partFromName));
+                    Participant partTo = new Participant(participant, getOneParticipantType(participant));
                     String timestamp = Integer.toString(resultSet.getInt("timestamp"));
                     String message = resultSet.getString("message");
-                    DBPostboxMessage pbM = new DBPostboxMessage(partFrom, partTo, message, timestamp);
+                    PostboxMessage pbM = new PostboxMessage(partFrom, partTo, message, timestamp);
                     msgList.add(pbM);
                 }
             }
@@ -270,21 +280,40 @@ public enum DBService implements IDBService {
     }
 
     @Override
-    public DBChannel getOneChannel(String participantA, String participantB) {
+    public Channel getChannel(String participantA, String participantB) {
         try (Statement statement = conn.createStatement()) {
             int partAID = getParticipantID(participantA);
             int partBID = getParticipantID(participantB);
-            String sqlStatement = MessageFormat.format(
+            String sql = MessageFormat.format(
                     "SELECT name from channel where (participant_01=''{0}'' AND participant_02=''{1}'') or (participant_01=''{1}'' AND participant_02=''{0}'')",
                     partAID, partBID);
             String channelName;
-            try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
                 if (!resultSet.next()) {
                     throw new SQLException("No channel found with participants: " + participantA + " & " + participantB);
                 }
                 channelName = resultSet.getString("name");
             }
-            return new DBChannel(channelName, getOneParticipant(participantA), getOneParticipant(participantB));
+            return new Channel(channelName, getOneParticipant(participantA), getOneParticipant(participantB));
+        } catch (SQLException sqlException) {
+            System.out.println(sqlException.getMessage());
+        }
+        return null;
+    }
+
+    public Channel getChannel(String channelName) {
+        try (Statement statement = conn.createStatement()) {
+            String sql = String.format("SELECT name, participant_01, participant_02 FROM channel WHERE name='%s'", channelName);
+            int part1Id;
+            int part2Id;
+            try (ResultSet resultSet = statement.executeQuery(sql)) {
+                if (!resultSet.next()) {
+                    throw new SQLException("No channel found with name: " + channelName);
+                }
+                part1Id = resultSet.getInt("participant_01");
+                part2Id = resultSet.getInt("participant_02");
+            }
+            return new Channel(channelName, getParticipant(part1Id), getParticipant(part2Id));
         } catch (SQLException sqlException) {
             System.out.println(sqlException.getMessage());
         }
@@ -314,10 +343,10 @@ public enum DBService implements IDBService {
     }
 
     @Override
-    public DBParticipant getOneParticipant(String participantName) {
+    public Participant getOneParticipant(String participantName) {
         participantName = participantName.toLowerCase();
         if (participantExists(participantName)) {
-            return new DBParticipant(participantName, getOneParticipantType(participantName));
+            return new Participant(participantName, getOneParticipantType(participantName));
         }
         return null;
     }
@@ -426,8 +455,8 @@ public enum DBService implements IDBService {
         return -1;
     }
 
-    private DBParticipant getParticipant(int partID) {
+    private Participant getParticipant(int partID) {
         String name = getParticipantName(partID);
-        return new DBParticipant(name, getOneParticipantType(name));
+        return new Participant(name, getOneParticipantType(name));
     }
 }

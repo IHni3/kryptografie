@@ -16,12 +16,15 @@ public class DropChannelCommand implements ICommand{
 
     @Override
     public String execute() throws CommandExecutionException {
-        var result = DBService.instance.getChannels().stream().filter(c -> c.getName().equals(channelName));
+        var channel = DBService.instance.getChannel(channelName);
 
-        if (result.count() == 0){
+        if (channel == null){
             throw new CommandExecutionException(String.format("unknown channel %s", channelName));
         }
 
+        if (!DBService.instance.removeChannel(channelName)){
+            throw new CommandExecutionException("Something went wrong");
+        }
 
         return null;
     }
