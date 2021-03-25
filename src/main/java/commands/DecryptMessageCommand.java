@@ -47,6 +47,12 @@ public class DecryptMessageCommand implements ICommand{
     private String callJarEncrypt(String jarPath, String className, String message, String keyfile) throws CommandExecutionException {
         try {
             var port = ComponentUtils.getPortFromJar(jarPath,className);
+
+            if(Configuration.instance.debugModeEnabled) {
+                var loggingEnableMethod = port.getClass().getDeclaredMethod("enableDebuggingMode");
+                loggingEnableMethod.invoke(port);
+            }
+
             var method = port.getClass().getDeclaredMethod("decrypt",String.class, File.class);
             return (String) method.invoke(port, message, new File(Configuration.instance.keyFilesDirectory + Configuration.instance.fileSeparator + keyfile));
         } catch (Exception exception) {

@@ -1,7 +1,7 @@
 database/MSADBService.java
  database.MSADBService
-parser/DecryptParser.java
- parser.DecryptParser
+configuration/Configuration.java
+ configuration.Configuration
 commands/DropChannelCommand.java
  commands.DropChannelCommand
 commands/ShowChannelCommand.java
@@ -70,10 +70,10 @@ parser/CrackRsaParser.java
  parser.CrackRsaParser
 logging/LogLevel.java
  logging.LogLevel
+parser/DecryptParser.java
+ parser.DecryptParser
 Application.java
  Application
-parser/EncryptParser.java
- parser.EncryptParser
 network/ParticipantDefault.java
  network.ParticipantDefault
 commands/IntruderChannelCommand.java
@@ -88,6 +88,19 @@ parser/CrackShiftParser.java
  parser.CrackShiftParser
 parser/RegisterParticipantParser.java
  parser.RegisterParticipantParser
+commands/CommandUtils.java
+ commands.CommandUtils
+logging/Logger.java
+ logging.Logger
+commands/CrackMessageShiftCommand.java
+ commands.CrackMessageShiftCommand
+commands/CrackMessageCommand.java
+ commands.CrackMessageCommand
+ commands.CrackMessageCommand$Task
+components/ComponentUtils.java
+ components.ComponentUtils
+parser/EncryptParser.java
+ parser.EncryptParser
 commands/EncryptMessageCommand.java
  commands.EncryptMessageCommand
  commands.EncryptMessageCommand$1
@@ -96,23 +109,10 @@ commands/DecryptMessageCommand.java
  commands.DecryptMessageCommand
  commands.DecryptMessageCommand$1
  commands.DecryptMessageCommand$UnsupportedAlgorithmException
-commands/CrackMessageShiftCommand.java
- commands.CrackMessageShiftCommand
-commands/CrackMessageCommand.java
- commands.CrackMessageCommand
- commands.CrackMessageCommand$Task
 gui/Controller.java
  gui.Controller
 gui/GUI.java
  gui.GUI
  gui.GUI$1
-logging/Logger.java
- logging.Logger
 logging/LoggingUtils.java
  logging.LoggingUtils
-configuration/Configuration.java
- configuration.Configuration
-components/ComponentUtils.java
- components.ComponentUtils
-commands/CommandUtils.java
- commands.CommandUtils

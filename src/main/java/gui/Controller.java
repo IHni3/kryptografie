@@ -58,7 +58,7 @@ public class Controller {
 
     }
 
-    public boolean isLoggingEnabled(){
-        return true;
+    public boolean isDebuggingEnabled(){
+        return Configuration.instance.debugModeEnabled;
     }
 }

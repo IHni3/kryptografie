@@ -71,7 +71,7 @@ public class GUI extends Application {
     private void keyPressed(KeyCode keyCode){
         switch(keyCode){
             case F3:
-                if(guiController.isLoggingEnabled()){
+                if(guiController.isDebuggingEnabled()){
                     guiController.disableDebugging();
                 } else {
                     guiController.enableDebugging();

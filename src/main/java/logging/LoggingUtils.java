@@ -1,7 +1,5 @@
 package logging;
 
-import logging.Logger;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,7 +17,13 @@ public class LoggingUtils {
     }
 
     public static File createLoggingFile(String filename) throws IOException {
-        final String directory = System.getProperty("user.dir") + System.getProperty("file.separator") + "log" ;
+        final String directory = System.getProperty("user.dir") + System.getProperty("file.separator") + "log";
+
+        File dir = new File(directory);
+        if (!dir.exists()){
+            dir.mkdirs();
+        }
+
         File file = new File(directory + System.getProperty("file.separator") + filename);
         file.createNewFile();
         return file;
