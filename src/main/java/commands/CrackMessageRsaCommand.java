@@ -3,37 +3,39 @@ package commands;
 import components.ComponentUtils;
 import configuration.Configuration;
 
-public class CrackMessageRsaCommand implements ICommand {
-    private final String message;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.concurrent.*;
+
+public class CrackMessageRsaCommand extends CrackMessageCommand {
     private final String keyfile;
 
     public CrackMessageRsaCommand(String message, String keyfile) {
-        this.message = message;
+        super(message);
         this.keyfile = keyfile;
-    }
-
-    public String getMessage() {
-        return message;
     }
 
     public String getKeyfile() {
         return keyfile;
     }
 
-    private String crackMessage(String jarPath, String className) throws CommandExecutionException {
-        try {
-            var port = ComponentUtils.getPortFromJar(jarPath, className);
-            var method = port.getClass().getDeclaredMethod("decrypt", String.class, String.class);
-            String decryptedMessage = String.valueOf(method.invoke(port, getMessage(), getKeyfile()));
-
-            return decryptedMessage;
-        } catch (Exception exception) {
-            throw new CommandExecutionException();
-        }
+    @Override
+    protected Method onConstructMethod(Object port) throws NoSuchMethodException {
+        return port.getClass().getDeclaredMethod("decrypt", String.class, String.class);
     }
 
     @Override
-    public String execute() throws CommandExecutionException {
-        return crackMessage(Configuration.instance.pathToRSACrackerJavaArchive, "RSACracker");
+    protected Object onMethodInvoke(Object port, Method method) throws InvocationTargetException, IllegalAccessException {
+        return method.invoke(port, getMessage(), getKeyfile());
+    }
+
+    @Override
+    protected String getJarPath() {
+        return Configuration.instance.pathToRSACrackerJavaArchive;
+    }
+
+    @Override
+    protected String getJarClass() {
+        return "RSACracker";
     }
 }

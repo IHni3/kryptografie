@@ -1,6 +1,11 @@
 package commands;
 
 import components.ComponentUtils;
+import configuration.Configuration;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.concurrent.*;
 
 public abstract class CrackMessageCommand implements ICommand{
 
@@ -16,20 +21,44 @@ public abstract class CrackMessageCommand implements ICommand{
 
     @Override
     public String execute() throws CommandExecutionException {
-        return crackMessage(getJarPath(),getJarClass());
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<String> future = executor.submit(new Task());
+        String decryptedMessage = "";
+        try {
+            decryptedMessage = future.get(30, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            future.cancel(true);
+        } catch (Exception e) {
+            Configuration.instance.logger.printError(e.getStackTrace().toString());
+            throw new CommandExecutionException();
+        }
+
+        executor.shutdownNow();
+
+        return decryptedMessage;
     }
 
-    private String crackMessage(String jarPath, String className) throws CommandExecutionException {
+    private String crackMessage() throws CommandExecutionException {
         try {
-            var port = ComponentUtils.getPortFromJar(jarPath, className);
-            var method = port.getClass().getDeclaredMethod("decrypt", String.class);
-            String decryptedMessage = String.valueOf(method.invoke(port, getMessage()));
+            var port = ComponentUtils.getPortFromJar(getJarPath(), getJarClass());
+            var method = onConstructMethod(port);
+            var decryptedMessage = String.valueOf(onMethodInvoke(port,method));
             return decryptedMessage;
         } catch (Exception exception) {
             throw new CommandExecutionException();
         }
     }
 
+
+    class Task implements Callable<String> {
+        @Override
+        public String call() throws Exception {
+            return crackMessage();
+        }
+    }
+
+    protected abstract Method onConstructMethod(Object port) throws NoSuchMethodException;
+    protected abstract Object onMethodInvoke(Object port, Method method) throws InvocationTargetException, IllegalAccessException;
     protected abstract String getJarPath();
     protected abstract String getJarClass();
 }
