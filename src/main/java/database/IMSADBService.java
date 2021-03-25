@@ -1,9 +1,9 @@
 package database;
 
-import database.models.Channel;
-import database.models.Message;
-import database.models.Participant;
-import database.models.PostboxMessage;
+import models.dbModels.DBChannel;
+import models.dbModels.DBMessage;
+import models.dbModels.DBParticipant;
+import models.dbModels.DBPostboxMessage;
 
 import java.util.List;
 
@@ -27,17 +27,17 @@ public interface IMSADBService {
 
     void insertMessage(String participantSender, String participantReceiver, String algorithm, String keyFile, String plainMessage, String encryptedMessage);
 
-    void insertMessage(Message message);
+    void insertMessage(DBMessage message);
 
     void insertParticipant(String name, String type);
 
-    void insertParticipant(Participant participant);
+    void insertParticipant(DBParticipant participant);
 
-    void insertChannel(Channel channel);
+    void insertChannel(DBChannel channel);
 
     void insertChannel(String name, String participantA, String participantB);
 
-    void insertPostboxMessage(PostboxMessage postboxMessage);
+    void insertPostboxMessage(DBPostboxMessage postboxMessage);
 
     void insertPostboxMessage(String participantSender, String participantReceiver, String message);
 
@@ -48,17 +48,17 @@ public interface IMSADBService {
 
     List<String> getTypes();
 
-    List<Participant> getParticipants();
+    List<DBParticipant> getParticipants();
 
-    List<Channel> getChannels();
+    List<DBChannel> getChannels();
 
-    List<PostboxMessage> getPostboxMessages(String participant);
+    List<DBPostboxMessage> getPostboxMessages(String participant);
 
-    Channel getOneChannel(String participantA, String participantB);
+    DBChannel getOneChannel(String participantA, String participantB);
 
     String getOneParticipantType(String participantName);
 
-    Participant getOneParticipant(String participantName);
+    DBParticipant getOneParticipant(String participantName);
 
 
     // Check for existence

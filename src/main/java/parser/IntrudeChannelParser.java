@@ -2,9 +2,8 @@
 package parser;
 
 
-import commands.DropChannelCommand;
 import commands.ICommand;
-import commands.IntruderChannelCommand;
+import commands.IntrudeChannelCommand;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,7 +24,7 @@ public class IntrudeChannelParser implements IParser{
         String participant = matcher.group(2);
 
 
-        ICommand command = new IntruderChannelCommand(channelName, participant);
+        ICommand command = new IntrudeChannelCommand(channelName, participant);
 
         return command;
     }

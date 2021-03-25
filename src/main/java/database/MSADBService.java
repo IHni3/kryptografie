@@ -1,9 +1,9 @@
 package database;
 
-import database.models.Channel;
-import database.models.Message;
-import database.models.Participant;
-import database.models.PostboxMessage;
+import models.dbModels.DBChannel;
+import models.dbModels.DBMessage;
+import models.dbModels.DBParticipant;
+import models.dbModels.DBPostboxMessage;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -92,7 +92,7 @@ public enum MSADBService implements IMSADBService {
     }
 
     @Override
-    public void insertMessage(Message message) {
+    public void insertMessage(DBMessage message) {
         insertMessage(message.getParticipantSender().getName(), message.getParticipantReceiver().getName(),
                 message.getPlainMessage(), message.getAlgorithm(), message.getEncryptedMessage(),
                 message.getKeyfile());
@@ -115,7 +115,7 @@ public enum MSADBService implements IMSADBService {
     }
 
     @Override
-    public void insertParticipant(Participant participant) {
+    public void insertParticipant(DBParticipant participant) {
         insertParticipant(participant.getName(), participant.getType());
     }
 
@@ -136,7 +136,7 @@ public enum MSADBService implements IMSADBService {
     }
 
     @Override
-    public void insertChannel(Channel channel) {
+    public void insertChannel(DBChannel channel) {
         insertChannel(channel.getName(), channel.getParticipantA().getName(),
                 channel.getParticipantB().getName());
     }
@@ -159,7 +159,7 @@ public enum MSADBService implements IMSADBService {
     }
 
     @Override
-    public void insertPostboxMessage(PostboxMessage postboxMessage) {
+    public void insertPostboxMessage(DBPostboxMessage postboxMessage) {
         insertPostboxMessage(postboxMessage.getParticipantReceiver().getName(),
                 postboxMessage.getParticipantSender().getName(), postboxMessage.getMessage());
     }
@@ -198,15 +198,15 @@ public enum MSADBService implements IMSADBService {
     }
 
     @Override
-    public List<Participant> getParticipants() {
-        List<Participant> participants = new ArrayList<>();
+    public List<DBParticipant> getParticipants() {
+        List<DBParticipant> participants = new ArrayList<>();
         try (Statement statement = conn.createStatement()) {
             String sqlStatement = "SELECT * from PARTICIPANTS";
             try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
                 while (resultSet.next()) {
                     String name = resultSet.getString("name");
                     String type = getTypeName(resultSet.getInt("type_id"));
-                    Participant p = new Participant(name, type);
+                    DBParticipant p = new DBParticipant(name, type);
                     participants.add(p);
                 }
             }
@@ -217,8 +217,8 @@ public enum MSADBService implements IMSADBService {
     }
 
     @Override
-    public List<Channel> getChannels() {
-        List<Channel> channelList = new ArrayList<>();
+    public List<DBChannel> getChannels() {
+        List<DBChannel> channelList = new ArrayList<>();
 
         try (Statement statement = conn.createStatement()) {
             String sqlStatement = "SELECT * from channel";
@@ -226,8 +226,8 @@ public enum MSADBService implements IMSADBService {
                 while (resultSet.next()) {
                     int participant1ID = resultSet.getInt("participant_01");
                     int participant2ID = resultSet.getInt("participant_02");
-                    Participant participantA = getParticipant(participant1ID);
-                    Participant participantB = getParticipant(participant2ID);
+                    DBParticipant participantA = getParticipant(participant1ID);
+                    DBParticipant participantB = getParticipant(participant2ID);
                     channelList.add(getOneChannel(participantA.getName(), participantB.getName()));
                 }
             }
@@ -238,8 +238,8 @@ public enum MSADBService implements IMSADBService {
     }
 
     @Override
-    public List<PostboxMessage> getPostboxMessages(String participant) {
-        List<PostboxMessage> msgList = new ArrayList<>();
+    public List<DBPostboxMessage> getPostboxMessages(String participant) {
+        List<DBPostboxMessage> msgList = new ArrayList<>();
         if (!participantExists(participant)) {
             System.out.println("Couldn't get postbox message, participant wasn't found.");
         }
@@ -249,11 +249,11 @@ public enum MSADBService implements IMSADBService {
                 while (resultSet.next()) {
                     int partFromID = resultSet.getInt("participant_from_id");
                     String partFromName = getParticipantName(partFromID);
-                    Participant partFrom = new Participant(partFromName, getOneParticipantType(partFromName));
-                    Participant partTo = new Participant(participant, getOneParticipantType(participant));
+                    DBParticipant partFrom = new DBParticipant(partFromName, getOneParticipantType(partFromName));
+                    DBParticipant partTo = new DBParticipant(participant, getOneParticipantType(participant));
                     String timestamp = Integer.toString(resultSet.getInt("timestamp"));
                     String message = resultSet.getString("message");
-                    PostboxMessage pbM = new PostboxMessage(partFrom, partTo, message, timestamp);
+                    DBPostboxMessage pbM = new DBPostboxMessage(partFrom, partTo, message, timestamp);
                     msgList.add(pbM);
                 }
             }
@@ -264,7 +264,7 @@ public enum MSADBService implements IMSADBService {
     }
 
     @Override
-    public Channel getOneChannel(String participantA, String participantB) {
+    public DBChannel getOneChannel(String participantA, String participantB) {
         try (Statement statement = conn.createStatement()) {
             int partAID = getParticipantID(participantA);
             int partBID = getParticipantID(participantB);
@@ -278,7 +278,7 @@ public enum MSADBService implements IMSADBService {
                 }
                 channelName = resultSet.getString("name");
             }
-            return new Channel(channelName, getOneParticipant(participantA), getOneParticipant(participantB));
+            return new DBChannel(channelName, getOneParticipant(participantA), getOneParticipant(participantB));
         } catch (SQLException sqlException) {
             System.out.println(sqlException.getMessage());
         }
@@ -308,10 +308,10 @@ public enum MSADBService implements IMSADBService {
     }
 
     @Override
-    public Participant getOneParticipant(String participantName) {
+    public DBParticipant getOneParticipant(String participantName) {
         participantName = participantName.toLowerCase();
         if (participantExists(participantName)) {
-            return new Participant(participantName, getOneParticipantType(participantName));
+            return new DBParticipant(participantName, getOneParticipantType(participantName));
         }
         return null;
     }
@@ -420,8 +420,8 @@ public enum MSADBService implements IMSADBService {
         return -1;
     }
 
-    private Participant getParticipant(int partID) {
+    private DBParticipant getParticipant(int partID) {
         String name = getParticipantName(partID);
-        return new Participant(name, getOneParticipantType(name));
+        return new DBParticipant(name, getOneParticipantType(name));
     }
 }
