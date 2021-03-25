@@ -40,7 +40,7 @@ public class GUI extends Application {
         TextArea commandLineArea = new TextArea();
         commandLineArea.setWrapText(true);
 
-        TextArea outputArea = new TextArea();
+        outputArea = new TextArea();
         outputArea.setWrapText(true);
         outputArea.setEditable(false);
 
@@ -50,10 +50,6 @@ public class GUI extends Application {
 
         inputArea = new TextArea();
         inputArea.setWrapText(true);
-
-        outputArea = new TextArea();
-        outputArea.setWrapText(true);
-        outputArea.setEditable(false);
 
         hBox.getChildren().addAll(executeButton, closeButton);
 
@@ -81,6 +77,7 @@ public class GUI extends Application {
                 guiController.executeCommand(inputArea.getText());
                 break;
             case F8:
+                guiController.outputLastLogFile();
                 break;
 
             default:
@@ -88,12 +85,8 @@ public class GUI extends Application {
     }
 
     public void setOutputText(String text){
-        if(outputArea.getText().isBlank()){
-            outputArea.appendText(Configuration.instance.lineSeparator + text);
-        } else {
-            outputArea.appendText(text);
-        }
-        outputArea.positionCaret(outputArea.getLength());
+        outputArea.appendText(text);
+        outputArea.appendText("\n");
     }
 
     public String getOutputText(){
