@@ -5,17 +5,12 @@ import configuration.AlgorithmType;
 import configuration.Configuration;
 
 import java.io.File;
-import java.io.InvalidObjectException;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
 
 public class EncryptMessageCommand implements ICommand{
 
-    private String message;
-    private AlgorithmType algorithm;
-    private String keyfile;
+    private final String message;
+    private final AlgorithmType algorithm;
+    private final String keyfile;
 
 
     public EncryptMessageCommand(String message, AlgorithmType algorithm, String keyfile) {
@@ -26,8 +21,6 @@ public class EncryptMessageCommand implements ICommand{
 
     @Override
     public String execute() throws CommandExecutionException {
-
-
         switch (algorithm)
         {
             case RSABASE -> {
@@ -38,9 +31,18 @@ public class EncryptMessageCommand implements ICommand{
             }
             default -> throw new CommandExecutionException();
         }
+    }
 
+    public String getMessage() {
+        return message;
+    }
 
+    public AlgorithmType getAlgorithm() {
+        return algorithm;
+    }
 
+    public String getKeyfile() {
+        return keyfile;
     }
 
     private String callJarEncrypt(String jarPath, String className, String message, String keyfile) throws CommandExecutionException {
@@ -53,8 +55,6 @@ public class EncryptMessageCommand implements ICommand{
             throw new CommandExecutionException();
         }
     }
-
-
 
     public class UnsupportedAlgorithmException extends Exception { }
 }

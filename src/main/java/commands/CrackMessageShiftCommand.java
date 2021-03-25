@@ -1,13 +1,25 @@
 package commands;
 
-public class CrackMessageShiftCommand implements ICommand {
-    public CrackMessageShiftCommand(String messageStr) {
+import configuration.Configuration;
 
+public class CrackMessageShiftCommand extends CrackMessageCommand {
+
+    public CrackMessageShiftCommand(String message) {
+        super(message);
     }
 
     @Override
-    public String execute() {
+    public String execute() throws CommandExecutionException {
+        return super.execute();
+    }
 
-        return null;
+    @Override
+    protected String getJarPath() {
+        return Configuration.instance.pathToShiftCrackerJavaArchive;
+    }
+
+    @Override
+    protected String getJarClass() {
+        return "ShiftCracker";
     }
 }
