@@ -10,6 +10,10 @@ import models.PostboxMessage;
 import java.util.Date;
 
 public class Intruder implements IParticipantType {
+    private models.Participant participant;
+    public Intruder (models.Participant participant){
+        this.participant = participant;
+    }
 
     @Override
     public void receiveMessage(BusMessage message) {
@@ -25,4 +29,5 @@ public class Intruder implements IParticipantType {
         }
 
     }
+
 }

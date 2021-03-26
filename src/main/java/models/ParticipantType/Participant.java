@@ -30,4 +30,9 @@ public class Participant implements IParticipantType {
         }
 
     }
+
+    @Override
+    public String toString(){
+        return "PARTICIPANT";
+    }
 }

@@ -7,19 +7,21 @@
 package models;
 
 import com.google.common.eventbus.Subscribe;
+import models.ParticipantType.IParticipantType;
+import models.ParticipantType.Intruder;
 
 public class Participant {
     private final String name;
-    private final String type;
+    private final IParticipantType type;
 
     public Participant(String name, String type){
         this.name = name;
-        this.type = type;
+        this.type = type.equals("intruder") ? new Intruder(this) : new models.ParticipantType.Participant(this);
     }
 
     @Subscribe
-    public void receiveMessage(){
-
+    public void receiveMessage(BusMessage message){
+        type.receiveMessage(message);
     }
 
     public String getName() {
@@ -27,6 +29,6 @@ public class Participant {
     }
 
     public String getType() {
-        return type;
+        return type.toString();
     }
 }
