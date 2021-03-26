@@ -6,6 +6,7 @@
 
 package commands;
 
+import configuration.Configuration;
 import configuration.ParticipantType;
 import database.DBService;
 import models.Participant;
@@ -24,7 +25,7 @@ public class RegisterParticipantCommand implements ICommand{
     public String execute() throws CommandExecutionException {
 
         if (DBService.instance.getOneParticipant(name) != null){
-            throw new CommandExecutionException(String.format("participant %s already exists, using existing postbox_%s", name));
+            Configuration.instance.textAreaLogger.info(String.format("participant %s already exists, using existing postbox_%s", name));
         }
 
         Participant participant = new Participant(name, type.toString());

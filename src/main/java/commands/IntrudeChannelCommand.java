@@ -6,6 +6,7 @@
 
 package commands;
 
+import configuration.Configuration;
 import database.DBService;
 
 import java.util.stream.Collectors;
@@ -26,13 +27,13 @@ public class IntrudeChannelCommand implements ICommand {
         var intruder = DBService.instance.getOneParticipant(participant);
 
         if (intruder == null){
-            throw new CommandExecutionException(String.format("intruder %s could not be found", participant));
+            Configuration.instance.textAreaLogger.info(String.format("intruder %s could not be found", participant));
         }
 
         var channel = DBService.instance.getChannel(channelName);
 
         if (channel == null){
-            throw new CommandExecutionException(String.format("channel %s could not be found", channelName));
+            Configuration.instance.textAreaLogger.info(String.format("channel %s could not be found", channelName));
         }
 
         channel.intrude(intruder);

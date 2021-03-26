@@ -6,6 +6,7 @@
 
 package commands;
 
+import configuration.Configuration;
 import database.DBService;
 
 public class DropChannelCommand implements ICommand{
@@ -19,11 +20,11 @@ public class DropChannelCommand implements ICommand{
         var channel = DBService.instance.getChannel(channelName);
 
         if (channel == null){
-            throw new CommandExecutionException(String.format("unknown channel %s", channelName));
+            Configuration.instance.textAreaLogger.info(String.format("unknown channel %s", channelName));
         }
 
         if (!DBService.instance.removeChannel(channelName)){
-            throw new CommandExecutionException("Something went wrong");
+            Configuration.instance.textAreaLogger.info("Something went wrong");
         }
 
         return null;

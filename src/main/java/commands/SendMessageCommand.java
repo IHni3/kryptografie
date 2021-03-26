@@ -7,6 +7,7 @@
 package commands;
 
 import configuration.AlgorithmType;
+import configuration.Configuration;
 import database.DBService;
 import models.BusMessage;
 import models.Message;
@@ -33,7 +34,7 @@ public class SendMessageCommand implements ICommand{
     public String execute() throws CommandExecutionException {
         var channel = DBService.instance.getChannel(sender, recipient);
         if (channel == null){
-            throw new CommandExecutionException(String.format("no valid channel from %s to %s", sender, recipient));
+            Configuration.instance.textAreaLogger.info(String.format("no valid channel from %s to %s", sender, recipient));
         }
 
         var senderPart = DBService.instance.getOneParticipant(sender);
@@ -43,7 +44,10 @@ public class SendMessageCommand implements ICommand{
         long timestampLong = now.getTime()/1000;
         String timestamp = String.valueOf(timestampLong);
 
-        Message dbMessage = new Message(senderPart, recieverPart, algorithmType.toString(), keyfile, timestamp, message, message);
+        ICommand encrption = new EncryptMessageCommand(message, algorithmType, keyfile);
+        String encrypted = encrption.execute();
+
+        Message dbMessage = new Message(senderPart, recieverPart, algorithmType.toString(), keyfile, timestamp, message, encrypted);
         channel.send(new BusMessage(dbMessage));
 
         DBService.instance.insertMessage(dbMessage);

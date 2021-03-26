@@ -6,6 +6,7 @@
 
 package commands;
 
+import configuration.Configuration;
 import database.DBService;
 import models.Channel;
 
@@ -22,15 +23,15 @@ public class CreateChannelCommand implements ICommand{
     public String execute() throws CommandExecutionException {
 
         if (DBService.instance.getChannel(channelName) != null){
-            throw new CommandExecutionException(String.format("channel %s already exists", channelName));
+            Configuration.instance.textAreaLogger.info(String.format("channel %s already exists", channelName));
         }
 
         if (DBService.instance.getChannel(part1name, part2name) != null){
-            throw new CommandExecutionException(String.format("communication channel between %s and %s already exists", part1name, part2name));
+            Configuration.instance.textAreaLogger.info(String.format("communication channel between %s and %s already exists", part1name, part2name));
         }
 
         if (part1name.equals(part2name)){
-            throw new CommandExecutionException(String.format("%s and %s identical - cannot create channel on itself", part1name, part2name));
+            Configuration.instance.textAreaLogger.info(String.format("%s and %s identical - cannot create channel on itself", part1name, part2name));
         }
 
         var part1 = DBService.instance.getOneParticipant(part1name);
