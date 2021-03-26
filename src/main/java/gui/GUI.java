@@ -6,6 +6,7 @@
 
 package gui;
 
+import configuration.Configuration;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -48,6 +49,8 @@ public class GUI extends Application {
         outputArea = new TextArea();
         outputArea.setWrapText(true);
         outputArea.setEditable(false);
+
+        Configuration.instance.textAreaLogger.addHandler(new TextAreaHandler(outputArea));
 
         executeButton.setOnAction(event -> guiController.executeCommand(inputArea.getText()));
 

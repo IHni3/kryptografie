@@ -71,6 +71,9 @@ public enum Configuration {
 
     }
 
+    //Test Field Logger
+    public java.util.logging.Logger textAreaLogger = java.util.logging.Logger.getLogger("test.test");
+
     // Intruded Channels
     public Map<String, String> intrudedChannels = new HashMap<>();
 
