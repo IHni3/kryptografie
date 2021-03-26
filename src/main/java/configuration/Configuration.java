@@ -23,7 +23,7 @@ public enum Configuration {
     public final String keyFilesDirectory = userDirectory + fileSeparator + "keyfiles";
 
     // Shift
-    public final String pathToShiftBaseJavaArchive = commonPathToJavaArchive + "shift" + fileSeparator + "build"
+    public final String pathToShiftJavaArchive = commonPathToJavaArchive + "shift" + fileSeparator + "build"
             + fileSeparator + "libs" + fileSeparator + "shift.jar";
 
     // ShiftCracker
@@ -31,7 +31,7 @@ public enum Configuration {
             + fileSeparator + "libs" + fileSeparator + "shift_cracker.jar";
 
     // RSABase
-    public final String pathToRSABaseJavaArchive = commonPathToJavaArchive + "rsa" + fileSeparator + "build"
+    public final String pathToRSAJavaArchive = commonPathToJavaArchive + "rsa" + fileSeparator + "build"
             + fileSeparator + "libs" + fileSeparator + "rsa.jar";
 
     // RSACracker
@@ -60,6 +60,14 @@ public enum Configuration {
     }
     public Logger getLogger(){
         return logger;
+    }
+
+    private Logger guiLogger;
+    public void setGUILogger(Logger guiLogger){
+        this.guiLogger = guiLogger;
+    }
+    public Logger getGUILogger(){
+        return guiLogger;
     }
 
 

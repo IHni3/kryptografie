@@ -58,15 +58,10 @@ public enum DBService implements IDBService {
     @Override
     public void insertType(String type) {
         type = type.toLowerCase();
-        StringBuilder sb = new StringBuilder();
-        if (getTypeID(type) > 0) return;
+        if (getTypeID(type) > 0)
+            return;
 
-        sb.append("INSERT INTO types (name)");
-        sb.append(" VALUES");
-        sb.append(" (").append("'").append(type).append("'").append(")");
-        System.out.println("SQL-Statement Builder: " + sb.toString());
-
-        db.outerUpdate(sb.toString());
+        db.outerUpdate(String.format("INSERT INTO types (name) VALUES ('%s')", type));
     }
 
     @Override

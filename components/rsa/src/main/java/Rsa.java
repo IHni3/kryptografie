@@ -28,7 +28,6 @@ public class Rsa {
         LoggingUtils.prepareLogger(logger,"encrypt", "rsa");
         logger.printInfo("It works!!");
 
-
         readPublicKeyFile(publicKeyfile);
 
         byte[] bytes = plainMessage.getBytes(Charset.defaultCharset());

@@ -7,6 +7,7 @@
 package parser;
 
 import commands.ICommand;
+import configuration.Configuration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -38,7 +39,7 @@ public class Parser implements IParser {
                 command = curParser.parse(input);
                 return command;
             } catch (ParserException exception) {
-                System.out.println(curParser.getClass().getName() + " failed!");
+                Configuration.instance.getLogger().printDebug(curParser.getClass().getName() + " failed!");
             }
         }
         throw new ParserException();

@@ -11,7 +11,7 @@ import database.DBService;
 public class DropChannelCommand implements ICommand{
     private String channelName;
     public DropChannelCommand(String channelName) {
-
+        this.channelName = channelName;
     }
 
     @Override
@@ -26,6 +26,6 @@ public class DropChannelCommand implements ICommand{
             throw new CommandExecutionException("Something went wrong");
         }
 
-        return null;
+        return "";
     }
 }

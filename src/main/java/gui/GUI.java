@@ -6,6 +6,7 @@
 
 package gui;
 
+import configuration.Configuration;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -26,7 +27,6 @@ public class GUI extends Application {
     private Controller guiController;
 
     public void start(Stage primaryStage) {
-
         guiController = new Controller(this);
 
         primaryStage.setTitle("MSA | Mergentheim/Mosbach Security Agency");
@@ -74,6 +74,7 @@ public class GUI extends Application {
             case F3:
                 if(guiController.isDebuggingEnabled()){
                     guiController.disableDebugging();
+                    Configuration.instance.getGUILogger().printInfo("testststs!!!");
                 } else {
                     guiController.enableDebugging();
                 }

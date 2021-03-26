@@ -11,12 +11,15 @@ import commands.CommandExecutionException;
 import commands.ICommand;
 import configuration.Configuration;
 import filesystem.FileSystemUtils;
+import logging.Logger;
 import parser.IParser;
 import parser.Parser;
 import parser.ParserException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
@@ -29,6 +32,21 @@ public class Controller {
     public Controller(GUI gui) {
         this.gui = gui;
         this.parser = new Parser();
+
+        Configuration.instance.setGUILogger(new Logger(new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) {
+                displayText("" + ((char)b));
+            }
+            @Override
+            public void write(byte[] b) {
+                displayText(new String(b));
+            }
+            @Override
+            public void write(byte[] b, int off, int len) {
+                displayText(new String(b, off, len));
+            }
+        })));
     }
 
     public void closeGUI(){
@@ -40,12 +58,12 @@ public class Controller {
     }
 
     public void disableDebugging(){
-        displayText("Logging turned: off");
+        Configuration.instance.getGUILogger().printInfo("Logging turned: off");
         configuration.instance.debugModeEnabled = false;
     }
 
     public void enableDebugging(){
-        displayText("Logging turned: on");
+        Configuration.instance.getGUILogger().printInfo("Logging turned: on");
         configuration.instance.debugModeEnabled = true;
     }
 
@@ -56,10 +74,11 @@ public class Controller {
             var result = command.execute();
             displayText(result);
         } catch (ParserException e) {
+            Configuration.instance.getGUILogger().printWarning("Could not parse command!");
             e.printStackTrace();
             //TODO
         } catch (CommandExecutionException e) {
-            displayText("Could not parse command!");
+
             e.printStackTrace();
         }
 

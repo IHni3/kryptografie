@@ -6,6 +6,8 @@
 
 package database;
 
+import configuration.Configuration;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -17,24 +19,27 @@ public enum HSQLDB {
     private Connection connection;
 
     public void setupConnection() {
-        System.out.println("--- setupConnection");
+       Configuration.instance.getLogger().printDebug("setupConnection");
 
         try {
             Class.forName("org.hsqldb.jdbcDriver");
             String databaseURL = DBConfiguration.instance.driverName + DBConfiguration.instance.databaseFile;
             connection = DriverManager.getConnection(databaseURL, DBConfiguration.instance.username, DBConfiguration.instance.password);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+           Configuration.instance.getLogger().printError(e.getMessage());
         }
     }
 
     private synchronized void update(String sqlStatement) {
+
+        Configuration.instance.getLogger().printDebug("executing: " + sqlStatement);
+
         try {
             Statement statement = connection.createStatement();
             statement.executeUpdate(sqlStatement);
             statement.close();
-        } catch (SQLException sqle) {
-            System.out.println(sqle.getMessage());
+        } catch (SQLException e) {
+           Configuration.instance.getLogger().printError(e.getMessage());
         }
     }
 
@@ -44,21 +49,12 @@ public enum HSQLDB {
        name VARCHAR(10) NOT NULL unique
     */
     public void createTableAlgorithms() {
-        System.out.println("--- createTableAlgorithms");
+       Configuration.instance.getLogger().printDebug("createTableAlgorithms");
 
-        StringBuilder sqlStringBuilder01 = new StringBuilder();
-        sqlStringBuilder01.append("CREATE TABLE IF NOT EXISTS algorithms (");
-        sqlStringBuilder01.append("id TINYINT NOT NULL").append(",");
-        sqlStringBuilder01.append("name VARCHAR(10) NOT NULL").append(",");
-        sqlStringBuilder01.append("PRIMARY KEY (id)");
-        sqlStringBuilder01.append(")");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder01.toString());
-        update(sqlStringBuilder01.toString());
-
-        StringBuilder sqlStringBuilder02 = new StringBuilder();
-        sqlStringBuilder02.append("CREATE UNIQUE INDEX IF NOT EXISTS idx_algorithms ON algorithms (name)");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder02.toString());
-        update(sqlStringBuilder02.toString());
+        update("CREATE TABLE IF NOT EXISTS algorithms (id TINYINT NOT NULL," +
+                "name VARCHAR(10) NOT NULL," +
+                "PRIMARY KEY (id))");
+        update("CREATE UNIQUE INDEX IF NOT EXISTS idx_algorithms ON algorithms (name)");
     }
 
     /*
@@ -67,21 +63,12 @@ public enum HSQLDB {
        name VARCHAR(10) NOT NULL unique
     */
     public void createTableTypes() {
-        System.out.println("--- createTableTypes");
+       Configuration.instance.getLogger().printDebug("createTableTypes");
 
-        StringBuilder sqlStringBuilder01 = new StringBuilder();
-        sqlStringBuilder01.append("CREATE TABLE IF NOT EXISTS types (");
-        sqlStringBuilder01.append("id TINYINT NOT NULL").append(",");
-        sqlStringBuilder01.append("name VARCHAR(10) NOT NULL").append(",");
-        sqlStringBuilder01.append("PRIMARY KEY (id)");
-        sqlStringBuilder01.append(")");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder01.toString());
-        update(sqlStringBuilder01.toString());
-
-        StringBuilder sqlStringBuilder02 = new StringBuilder();
-        sqlStringBuilder02.append("CREATE UNIQUE INDEX IF NOT EXISTS idx_types ON types (name)");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder02.toString());
-        update(sqlStringBuilder02.toString());
+        update("CREATE TABLE IF NOT EXISTS types (id TINYINT NOT NULL," +
+                "name VARCHAR(10) NOT NULL," +
+                "PRIMARY KEY (id))");
+        update("CREATE UNIQUE INDEX IF NOT EXISTS idx_types ON types (name)");
     }
 
     /*
@@ -91,31 +78,14 @@ public enum HSQLDB {
        type_id TINYINT  NOT NULL FK
     */
     public void createTableParticipants() {
-        System.out.println("--- createTableParticipants");
+       Configuration.instance.getLogger().printDebug("createTableParticipants");
 
-        StringBuilder sqlStringBuilder01 = new StringBuilder();
-        sqlStringBuilder01.append("CREATE TABLE IF NOT EXISTS participants (");
-        sqlStringBuilder01.append("id TINYINT NOT NULL").append(",");
-        sqlStringBuilder01.append("name VARCHAR(50) NOT NULL").append(",");
-        sqlStringBuilder01.append("type_id TINYINT NULL").append(",");
-        sqlStringBuilder01.append("PRIMARY KEY (id)");
-        sqlStringBuilder01.append(")");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder01.toString());
-        update(sqlStringBuilder01.toString());
-
-        StringBuilder sqlStringBuilder02 = new StringBuilder();
-        sqlStringBuilder02.append("CREATE UNIQUE INDEX IF NOT EXISTS idx_participants ON types (name)");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder02.toString());
-        update(sqlStringBuilder02.toString());
-
-        StringBuilder sqlStringBuilder03 = new StringBuilder();
-        sqlStringBuilder03.append("ALTER TABLE participants ADD CONSTRAINT IF NOT EXISTS fk_participants ");
-        sqlStringBuilder03.append("FOREIGN KEY (type_id) ");
-        sqlStringBuilder03.append("REFERENCES types (id) ");
-        sqlStringBuilder03.append("ON DELETE CASCADE");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder03.toString());
-
-        update(sqlStringBuilder03.toString());
+        update("CREATE TABLE IF NOT EXISTS participants (id TINYINT NOT NULL," +
+                "name VARCHAR(50) NOT NULL," +
+                "type_id TINYINT NULL," +
+                "PRIMARY KEY (id))");
+        update("CREATE UNIQUE INDEX IF NOT EXISTS idx_participants ON types (name)");
+        update("ALTER TABLE participants ADD CONSTRAINT IF NOT EXISTS fk_participants FOREIGN KEY (type_id) REFERENCES types (id) ON DELETE CASCADE");
     }
 
     /*
@@ -125,33 +95,14 @@ public enum HSQLDB {
        participant_02 TINYINT NOT NULL FK
     */
     public void createTableChannel() {
-        System.out.println("--- createTableChannel");
+       Configuration.instance.getLogger().printDebug("createTableChannel");
 
-        StringBuilder sqlStringBuilder01 = new StringBuilder();
-        sqlStringBuilder01.append("CREATE TABLE IF NOT EXISTS channel (");
-        sqlStringBuilder01.append("name VARCHAR(25) NOT NULL").append(",");
-        sqlStringBuilder01.append("participant_01 TINYINT NOT NULL").append(",");
-        sqlStringBuilder01.append("participant_02 TINYINT NOT NULL").append(",");
-        sqlStringBuilder01.append("PRIMARY KEY (name)");
-        sqlStringBuilder01.append(" )");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder01.toString());
-        update(sqlStringBuilder01.toString());
-
-        StringBuilder sqlStringBuilder02 = new StringBuilder();
-        sqlStringBuilder02.append("ALTER TABLE channel ADD CONSTRAINT IF NOT EXISTS fk_channel_01 ");
-        sqlStringBuilder02.append("FOREIGN KEY (participant_01) ");
-        sqlStringBuilder02.append("REFERENCES participants (id) ");
-        sqlStringBuilder02.append("ON DELETE CASCADE");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder02.toString());
-        update(sqlStringBuilder02.toString());
-
-        StringBuilder sqlStringBuilder03 = new StringBuilder();
-        sqlStringBuilder03.append("ALTER TABLE channel ADD CONSTRAINT IF NOT EXISTS fk_channel_02 ");
-        sqlStringBuilder03.append("FOREIGN KEY (participant_02) ");
-        sqlStringBuilder03.append("REFERENCES participants (id) ");
-        sqlStringBuilder03.append("ON DELETE CASCADE");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder03.toString());
-        update(sqlStringBuilder03.toString());
+        update("CREATE TABLE IF NOT EXISTS channel (name VARCHAR(25) NOT NULL," +
+                "participant_01 TINYINT NOT NULL," +
+                "participant_02 TINYINT NOT NULL," +
+                "PRIMARY KEY (name))");
+        update("ALTER TABLE channel ADD CONSTRAINT IF NOT EXISTS fk_channel_01 FOREIGN KEY (participant_01) REFERENCES participants (id) ON DELETE CASCADE");
+        update("ALTER TABLE channel ADD CONSTRAINT IF NOT EXISTS fk_channel_02 FOREIGN KEY (participant_02) REFERENCES participants (id) ON DELETE CASCADE");
     }
 
     /*
@@ -166,46 +117,24 @@ public enum HSQLDB {
       timestamp           INT
     */
     public void createTableMessages() {
-        System.out.println("--- createTableMessages");
+       Configuration.instance.getLogger().printDebug("createTableMessages");
 
-        StringBuilder sqlStringBuilder01 = new StringBuilder();
-        sqlStringBuilder01.append("CREATE TABLE IF NOT EXISTS messages (");
-        sqlStringBuilder01.append("id TINYINT NOT NULL").append(",");
-        sqlStringBuilder01.append("participant_from_id TINYINT NOT NULL").append(",");
-        sqlStringBuilder01.append("participant_to_id TINYINT NOT NULL").append(",");
-        sqlStringBuilder01.append("plain_message VARCHAR(50) NOT NULL").append(",");
-        sqlStringBuilder01.append("algorithm_id TINYINT NOT NULL").append(",");
-        sqlStringBuilder01.append("encrypted_message VARCHAR(50) NOT NULL").append(",");
-        sqlStringBuilder01.append("keyfile VARCHAR(20) NOT NULL").append(",");
-        sqlStringBuilder01.append("timestamp INT NOT NULL").append(",");
-        sqlStringBuilder01.append("PRIMARY KEY (id)");
-        sqlStringBuilder01.append(" )");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder01.toString());
-        update(sqlStringBuilder01.toString());
+        update("CREATE TABLE IF NOT EXISTS messages (" +
+                "id TINYINT NOT NULL," +
+                "participant_from_id TINYINT NOT NULL," +
+                "participant_to_id TINYINT NOT NULL," +
+                "plain_message VARCHAR(50) NOT NULL," +
+                "algorithm_id TINYINT NOT NULL," +
+                "encrypted_message VARCHAR(50) NOT NULL," +
+                "keyfile VARCHAR(20) NOT NULL," +
+                "timestamp INT NOT NULL," +
+                "PRIMARY KEY (id))");
 
-        StringBuilder sqlStringBuilder02 = new StringBuilder();
-        sqlStringBuilder02.append("ALTER TABLE messages ADD CONSTRAINT IF NOT EXISTS fk_messages_01 ");
-        sqlStringBuilder02.append("FOREIGN KEY (participant_from_id) ");
-        sqlStringBuilder02.append("REFERENCES participants (id) ");
-        sqlStringBuilder02.append("ON DELETE CASCADE");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder02.toString());
-        update(sqlStringBuilder02.toString());
+        update("ALTER TABLE messages ADD CONSTRAINT IF NOT EXISTS fk_messages_01 FOREIGN KEY (participant_from_id) REFERENCES participants (id) ON DELETE CASCADE");
 
-        StringBuilder sqlStringBuilder03 = new StringBuilder();
-        sqlStringBuilder03.append("ALTER TABLE messages ADD CONSTRAINT IF NOT EXISTS fk_messages_02 ");
-        sqlStringBuilder03.append("FOREIGN KEY (participant_to_id) ");
-        sqlStringBuilder03.append("REFERENCES participants (id) ");
-        sqlStringBuilder03.append("ON DELETE CASCADE");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder03.toString());
-        update(sqlStringBuilder03.toString());
+        update("ALTER TABLE messages ADD CONSTRAINT IF NOT EXISTS fk_messages_02 FOREIGN KEY (participant_to_id) REFERENCES participants (id) ON DELETE CASCADE");
 
-        StringBuilder sqlStringBuilder04 = new StringBuilder();
-        sqlStringBuilder04.append("ALTER TABLE messages ADD CONSTRAINT IF NOT EXISTS fk_messages_03 ");
-        sqlStringBuilder04.append("FOREIGN KEY (algorithm_id) ");
-        sqlStringBuilder04.append("REFERENCES algorithms (id) ");
-        sqlStringBuilder04.append("ON DELETE CASCADE");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder04.toString());
-        update(sqlStringBuilder04.toString());
+        update("ALTER TABLE messages ADD CONSTRAINT IF NOT EXISTS fk_messages_03 FOREIGN KEY (algorithm_id) REFERENCES algorithms (id) ON DELETE CASCADE");
     }
 
     /*
@@ -216,38 +145,28 @@ public enum HSQLDB {
        timestamp           INT
      */
     public void createTablePostbox(String participantName) {
-        String table = "postbox_" + participantName;
-        System.out.println("--- createTablePostbox_" + participantName);
+        String tableName = "postbox_" + participantName;
+        Configuration.instance.getLogger().printDebug("createTablePostbox_" + participantName);
 
-        StringBuilder sqlStringBuilder01 = new StringBuilder();
-        sqlStringBuilder01.append("CREATE TABLE IF NOT EXISTS ").append(table).append(" (");
-        sqlStringBuilder01.append("id TINYINT NOT NULL").append(",");
-        sqlStringBuilder01.append("participant_from_id TINYINT NOT NULL").append(",");
-        sqlStringBuilder01.append("message VARCHAR(50) NOT NULL").append(",");
-        sqlStringBuilder01.append("timestamp BIGINT NOT NULL").append(",");
-        sqlStringBuilder01.append("PRIMARY KEY (id)");
-        sqlStringBuilder01.append(")");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder01.toString());
-        update(sqlStringBuilder01.toString());
+        update(String.format("CREATE TABLE IF NOT EXISTS %s (id TINYINT NOT NULL," +
+                        "participant_from_id TINYINT NOT NULL," +
+                        "message VARCHAR(50) NOT NULL," +
+                        "timestamp BIGINT NOT NULL," +
+                        "PRIMARY KEY (id))",
+                tableName));
 
-        StringBuilder sqlStringBuilder02 = new StringBuilder();
-        sqlStringBuilder02.append("ALTER TABLE ").append(table).append(" ADD CONSTRAINT IF NOT EXISTS fk_postbox_").append(participantName);
-        sqlStringBuilder02.append(" FOREIGN KEY (participant_from_id) ");
-        sqlStringBuilder02.append("REFERENCES participants (id) ");
-        sqlStringBuilder02.append("ON DELETE CASCADE");
-        System.out.println("sqlStringBuilder : " + sqlStringBuilder02.toString());
-        update(sqlStringBuilder02.toString());
+        update(String.format("ALTER TABLE %s ADD CONSTRAINT IF NOT EXISTS fk_postbox_%s FOREIGN KEY (participant_from_id) REFERENCES participants (id) ON DELETE CASCADE", tableName, participantName));
     }
 
     public void shutdown() {
-        System.out.println("--- shutdown");
+       Configuration.instance.getLogger().printDebug("shutdown");
 
         try {
             Statement statement = connection.createStatement();
             statement.execute("SHUTDOWN");
             connection.close();
         } catch (SQLException sqle) {
-            System.out.println(sqle.getMessage());
+           Configuration.instance.getLogger().printError(sqle.getMessage());
         }
     }
 
