@@ -48,7 +48,7 @@ public class SendMessageCommand implements ICommand{
         String encrypted = encrption.execute();
 
         Message dbMessage = new Message(senderPart, recieverPart, algorithmType.toString(), keyfile, timestamp, message, encrypted);
-        channel.send(new BusMessage(dbMessage));
+        channel.send(new BusMessage(encrypted, senderPart, recieverPart, algorithmType, keyfile));
 
         DBService.instance.insertMessage(dbMessage);
 

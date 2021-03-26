@@ -6,6 +6,8 @@
 
 package models;
 
+import com.google.common.eventbus.Subscribe;
+
 public class Participant {
     private final String name;
     private final String type;
@@ -13,6 +15,11 @@ public class Participant {
     public Participant(String name, String type){
         this.name = name;
         this.type = type;
+    }
+
+    @Subscribe
+    public void receiveMessage(){
+
     }
 
     public String getName() {
