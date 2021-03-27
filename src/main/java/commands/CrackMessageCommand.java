@@ -34,11 +34,15 @@ public abstract class CrackMessageCommand implements ICommand{
             decryptedMessage = future.get(MAX_EXECUTION_TIME, TimeUnit.SECONDS);
         } catch (TimeoutException e) {
             future.cancel(true);
+            throw new CommandExecutionException("cracking encrypted message \"" + getMessage() + "\" failed", e);
         } catch (Exception e) {
-            throw new CommandExecutionException("Task execution failed!", e);
+            throw new CommandExecutionException("cracking encrypted message \"" + getMessage() + "\" failed", e);
         }
 
         executor.shutdownNow();
+
+        if(decryptedMessage.isEmpty())
+            throw new CommandExecutionException("cracking encrypted message \"" + getMessage() + "\" failed");
 
         return decryptedMessage;
     }

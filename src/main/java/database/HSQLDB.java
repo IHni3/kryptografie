@@ -8,10 +8,7 @@ package database;
 
 import configuration.Configuration;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public enum HSQLDB {
     instance;
@@ -30,17 +27,20 @@ public enum HSQLDB {
         }
     }
 
-    private synchronized void update(String sqlStatement) {
+    public synchronized int update(String sqlStatement) throws SQLException {
 
         Configuration.instance.getLogger().printDebug("executing: " + sqlStatement);
 
-        try {
             Statement statement = connection.createStatement();
-            statement.executeUpdate(sqlStatement);
+            var ret = statement.executeUpdate(sqlStatement);
             statement.close();
-        } catch (SQLException e) {
-           Configuration.instance.getLogger().printError(e.getMessage());
-        }
+            return ret;
+
+    }
+
+    public synchronized ResultSet executeQuery(final String sqlStatement) throws SQLException {
+        Statement statement = connection.createStatement();
+        return statement.executeQuery(sqlStatement);
     }
 
     /*
@@ -48,7 +48,7 @@ public enum HSQLDB {
        id TINYINT       NOT NULL PK
        name VARCHAR(10) NOT NULL unique
     */
-    public void createTableAlgorithms() {
+    public void createTableAlgorithms() throws SQLException {
        Configuration.instance.getLogger().printDebug("createTableAlgorithms");
 
         update("CREATE TABLE IF NOT EXISTS algorithms (id TINYINT NOT NULL," +
@@ -62,7 +62,7 @@ public enum HSQLDB {
        id TINYINT       NOT NULL PK
        name VARCHAR(10) NOT NULL unique
     */
-    public void createTableTypes() {
+    public void createTableTypes() throws SQLException {
        Configuration.instance.getLogger().printDebug("createTableTypes");
 
         update("CREATE TABLE IF NOT EXISTS types (id TINYINT NOT NULL," +
@@ -77,7 +77,7 @@ public enum HSQLDB {
        name VARCHAR(50) NOT NULL unique
        type_id TINYINT  NOT NULL FK
     */
-    public void createTableParticipants() {
+    public void createTableParticipants() throws SQLException {
        Configuration.instance.getLogger().printDebug("createTableParticipants");
 
         update("CREATE TABLE IF NOT EXISTS participants (id TINYINT NOT NULL," +
@@ -94,7 +94,7 @@ public enum HSQLDB {
        participant_01 TINYINT NOT NULL FK
        participant_02 TINYINT NOT NULL FK
     */
-    public void createTableChannel() {
+    public void createTableChannel() throws SQLException {
        Configuration.instance.getLogger().printDebug("createTableChannel");
 
         update("CREATE TABLE IF NOT EXISTS channel (name VARCHAR(25) NOT NULL," +
@@ -116,7 +116,7 @@ public enum HSQLDB {
       keyfile             VARCHAR(20) NOT NULL
       timestamp           INT
     */
-    public void createTableMessages() {
+    public void createTableMessages() throws SQLException {
        Configuration.instance.getLogger().printDebug("createTableMessages");
 
         update("CREATE TABLE IF NOT EXISTS messages (" +
@@ -144,7 +144,7 @@ public enum HSQLDB {
        message             VARCHAR(50) NOT NULL
        timestamp           INT
      */
-    public void createTablePostbox(String participantName) {
+    public void createTablePostbox(String participantName) throws SQLException {
         String tableName = "postbox_" + participantName;
         Configuration.instance.getLogger().printDebug("createTablePostbox_" + participantName);
 
@@ -170,7 +170,7 @@ public enum HSQLDB {
         }
     }
 
-    public void setupDatabase() {
+    public void setupDatabase() throws SQLException {
         setupConnection();
         createTableAlgorithms();
         createTableTypes();
@@ -178,9 +178,5 @@ public enum HSQLDB {
         createTableChannel();
         createTableMessages();
         createTablePostbox("msa");
-    }
-
-    public void outerUpdate(String sqlStatement){
-        update(sqlStatement);
     }
 }

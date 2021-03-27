@@ -9,7 +9,8 @@ package commands;
 import database.DBService;
 
 public class DropChannelCommand implements ICommand{
-    private String channelName;
+    private final String channelName;
+
     public DropChannelCommand(String channelName) {
         this.channelName = channelName;
     }
@@ -26,6 +27,6 @@ public class DropChannelCommand implements ICommand{
             throw new CommandExecutionException("Something went wrong");
         }
 
-        return "";
+        return String.format("channel %s deleted", channelName);
     }
 }

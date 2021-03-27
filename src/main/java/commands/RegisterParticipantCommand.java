@@ -24,12 +24,12 @@ public class RegisterParticipantCommand implements ICommand{
     public String execute() throws CommandExecutionException {
 
         if (DBService.instance.getOneParticipant(name) != null){
-            throw new CommandExecutionException(String.format("participant %s already exists, using existing postbox_%s", name));
+            throw new CommandExecutionException(String.format("participant %s already exists, using existing postbox_%s", name, name));
         }
 
         Participant participant = new Participant(name, type.toString());
         DBService.instance.insertParticipant(participant);
 
-        return null;
+        return "participant "+name+" with type " + type.name() + " registered and postbox_" + name + " created";
     }
 }

@@ -6,15 +6,14 @@
 
 package database;
 
+import configuration.Configuration;
 import models.Channel;
 import models.Message;
 import models.Participant;
 import models.PostboxMessage;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -23,8 +22,7 @@ import java.util.List;
 public enum DBService implements IDBService {
     instance;
 
-    private HSQLDB db = HSQLDB.instance;
-    private Connection conn;
+    private final HSQLDB db = HSQLDB.instance;
 
     @Override
     public void setupConnection() {
@@ -33,16 +31,21 @@ public enum DBService implements IDBService {
 
     @Override
     public void createAllTables() {
-        db.createTableAlgorithms();
-        db.createTableParticipants();
-        db.createTableChannel();
-        db.createTableMessages();
-        db.createTableTypes();
+
+        try {
+            db.createTableTypes();
+            db.createTableAlgorithms();
+            db.createTableParticipants();
+            db.createTableChannel();
+            db.createTableMessages();
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printCritical(exception.toString());
+        }
+
     }
 
     @Override
     public void dropAllTables() {
-
     }
 
     @Override
@@ -58,22 +61,25 @@ public enum DBService implements IDBService {
     @Override
     public void insertType(String type) {
         type = type.toLowerCase();
-        if (getTypeID(type) > 0)
+        if (getTypeID(type) >= 0)
             return;
 
-        db.outerUpdate(String.format("INSERT INTO types (name) VALUES ('%s')", type));
+        try {
+            db.update(String.format("INSERT INTO types (name) VALUES ('%s')",type));
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printWarning(exception.toString());
+        }
     }
 
     @Override
     public void insertAlgorithm(String algorithm) {
-        StringBuilder sb = new StringBuilder();
-        if (getAlgorithmID(algorithm) > 0) return;
-        sb.append("INSERT INTO algorithms (").append("name").append(")");
-        sb.append(" VALUES ");
-        sb.append("(").append("'").append(algorithm).append("'");
-        sb.append(")");
-        System.out.println("SQL-Statement Builder: " + sb.toString());
-        db.outerUpdate(sb.toString());
+        if (getAlgorithmID(algorithm) >= 0) return;
+
+        try {
+            db.update(String.format("INSERT INTO algorithms (name) VALUES ('%s')",algorithm));
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printWarning(exception.toString());
+        }
     }
 
     @Override
@@ -82,20 +88,32 @@ public enum DBService implements IDBService {
         int participantToID = getParticipantID(participantReceiver);
         int algorithmID = getAlgorithmID(algorithm);
         long timeStamp = Instant.now().getEpochSecond();
-        StringBuilder sqlStringBuilder = new StringBuilder();
-        sqlStringBuilder.append("INSERT INTO messages (PARTICIPANT_FROM_ID, PARTICIPANT_TO_ID, PLAIN_MESSAGE, ALGORITHM_ID, ENCRYPTED_MESSAGE, KEYFILE, TIMESTAMP)");
-        sqlStringBuilder.append(" VALUES (");
-        sqlStringBuilder.append(MessageFormat.format("{0}, {1}, ''{2}'', {3}, ''{4}'', ''{5}'', {6} ",
-                participantFromID, participantToID, plainMessage, algorithmID, encryptedMessage, keyFile, Long.toString(timeStamp)));
-        sqlStringBuilder.append(")");
-        System.out.println("SQL-Statement Builder: " + sqlStringBuilder.toString());
-        db.outerUpdate(sqlStringBuilder.toString());
+
+
+        try {
+            db.update(String.format("INSERT INTO messages" +
+                            "(PARTICIPANT_FROM_ID, PARTICIPANT_TO_ID, PLAIN_MESSAGE, ALGORITHM_ID, ENCRYPTED_MESSAGE, KEYFILE, TIMESTAMP)" +
+                            "VALUES (%d,%d,'%s',%d,'%s','%s',%d)",
+                    participantFromID,
+                    participantToID,
+                    plainMessage,
+                    algorithmID,
+                    encryptedMessage,
+                    keyFile,
+                    timeStamp)
+            );
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printWarning(exception.toString());
+        }
     }
 
     @Override
     public void insertMessage(Message message) {
-        insertMessage(message.getParticipantSender().getName(), message.getParticipantReceiver().getName(),
-                message.getPlainMessage(), message.getAlgorithm(), message.getEncryptedMessage(),
+        insertMessage(message.getParticipantSender().getName(),
+                message.getParticipantReceiver().getName(),
+                message.getPlainMessage(),
+                message.getAlgorithm(),
+                message.getEncryptedMessage(),
                 message.getKeyfile());
     }
 
@@ -103,16 +121,13 @@ public enum DBService implements IDBService {
     public void insertParticipant(String name, String type) {
         name = name.toLowerCase();
         int typeID = getTypeID(type);
-        StringBuilder sqlStringBuilder = new StringBuilder();
-        sqlStringBuilder.append("INSERT INTO participants (").append("name").append(",").append("type_id").append(")");
-        sqlStringBuilder.append(" VALUES ");
-        sqlStringBuilder.append("(").append("'").append(name).append("',");
-        sqlStringBuilder.append(typeID);
-        sqlStringBuilder.append(")");
-        System.out.println("SQL-Statement Builder: " + sqlStringBuilder.toString());
-        db.outerUpdate(sqlStringBuilder.toString());
 
-        db.createTablePostbox(name);
+        try {
+            db.update(String.format("INSERT INTO participants (name,type_id) VALUES ('%s', %d)", name, typeID));
+            db.createTablePostbox(name);
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printWarning(exception.toString());
+        }
     }
 
     @Override
@@ -125,69 +140,81 @@ public enum DBService implements IDBService {
         name = name.toLowerCase();
         int participantA_ID = getParticipantID(participantA);
         int participantB_ID = getParticipantID(participantB);
-        StringBuilder sqlStringBuilder = new StringBuilder();
-        sqlStringBuilder.append("INSERT INTO channel (").append("name").append(",").append("participant_01").append(",").append("participant_02").append(")");
-        sqlStringBuilder.append(" VALUES ");
-        sqlStringBuilder.append("(").append("'").append(name).append("',");
-        sqlStringBuilder.append(participantA_ID).append(",");
-        sqlStringBuilder.append(participantB_ID);
-        sqlStringBuilder.append(")");
-        System.out.println("SQL-Statement Builder: " + sqlStringBuilder.toString());
-        db.outerUpdate(sqlStringBuilder.toString());
+
+        try {
+            db.update(String.format("INSERT INTO channel" +
+                            "(name,participant_01,participant_02)" +
+                            "VALUES ('%s', %d, %d)",
+                    name,
+                    participantA_ID,
+                    participantB_ID));
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printWarning(exception.toString());
+        }
     }
 
     @Override
     public void insertChannel(Channel channel) {
-        insertChannel(channel.getName(), channel.getParticipantA().getName(),
+        insertChannel(channel.getName(),
+                channel.getParticipantA().getName(),
                 channel.getParticipantB().getName());
     }
 
     @Override
     public void insertPostboxMessage(String participantSender, String participantReceiver, String message) {
         if (!participantExists(participantSender) || !participantExists(participantReceiver)) {
-            System.out.println("Could not save postbox message, participant not found.");
+            Configuration.instance.getLogger().printWarning("Could not save postbox message, participant not found.");
+            return;
         }
+
         int participantFromID = getParticipantID(participantSender);
         long timeStamp = Instant.now().getEpochSecond();
-        StringBuilder sqlStringBuilder = new StringBuilder();
-        sqlStringBuilder.append("INSERT INTO postbox_" + participantReceiver + " (participant_from_id, message, timestamp)");
-        sqlStringBuilder.append(" VALUES (");
-        sqlStringBuilder.append(MessageFormat.format("{0}, ''{1}'', {2} ",
-                participantFromID, message, Long.toString(timeStamp)));
-        sqlStringBuilder.append(")");
-        System.out.println("SQL-Statement Builder: " + sqlStringBuilder.toString());
-        db.outerUpdate(sqlStringBuilder.toString());
+        try {
+            db.update(String.format("INSERT INTO postbox_%s" +
+                            "(participant_from_id, message, timestamp)" +
+                            "VALUES (%d, %s, %d)",
+                    participantReceiver,
+                    participantFromID,
+                    message,
+                    timeStamp));
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printWarning(exception.toString());
+        }
     }
 
     @Override
     public void insertPostboxMessage(PostboxMessage postboxMessage) {
         insertPostboxMessage(postboxMessage.getParticipantReceiver().getName(),
-                postboxMessage.getParticipantSender().getName(), postboxMessage.getMessage());
+                postboxMessage.getParticipantSender().getName(),
+                postboxMessage.getMessage());
     }
 
-    public boolean removeChannel(String channelName){
+    public boolean removeChannel(String channelName) {
         var sql = String.format("DELETE FROM channel WHERE name='%s'", channelName);
-        try (Statement statement = conn.createStatement()) {
-            var affected = statement.executeUpdate(sql);
-            return affected != 0;
-        } catch (Exception e) {
+
+        int affected = 0;
+        try {
+            affected = db.update(sql);
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printWarning(exception.toString());
             return false;
         }
-    }
+        return affected != 0;
 
+    }
 
     @Override
     public List<String> getAlgorithms() {
         List<String> algorithms = new ArrayList<>();
-        try (Statement statement = conn.createStatement()) {
+        try {
             String sqlStatement = "SELECT * from ALGORITHMS";
-            try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
-                while (resultSet.next()) {
-                    algorithms.add(resultSet.getString("name"));
-                }
+            ResultSet resultSet = db.executeQuery(sqlStatement);
+            while (resultSet.next()) {
+                algorithms.add(resultSet.getString("name"));
             }
+
         } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+            Configuration.instance.getLogger().printError(sqlException.getMessage());
         }
         return algorithms;
     }
@@ -195,15 +222,15 @@ public enum DBService implements IDBService {
     @Override
     public List<String> getTypes() {
         List<String> types = new ArrayList<>();
-        try (Statement statement = conn.createStatement()) {
+        try {
             String sqlStatement = "SELECT * from TYPES";
-            try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
-                while (resultSet.next()) {
-                    types.add(resultSet.getString("name"));
-                }
+            ResultSet resultSet = db.executeQuery(sqlStatement);
+            while (resultSet.next()) {
+                types.add(resultSet.getString("name"));
             }
+
         } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+            Configuration.instance.getLogger().printError(sqlException.getMessage());
         }
         return types;
     }
@@ -211,18 +238,18 @@ public enum DBService implements IDBService {
     @Override
     public List<Participant> getParticipants() {
         List<Participant> participants = new ArrayList<>();
-        try (Statement statement = conn.createStatement()) {
+        try {
             String sqlStatement = "SELECT * from PARTICIPANTS";
-            try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
-                while (resultSet.next()) {
-                    String name = resultSet.getString("name");
-                    String type = getTypeName(resultSet.getInt("type_id"));
-                    Participant p = new Participant(name, type);
-                    participants.add(p);
-                }
+            ResultSet resultSet = db.executeQuery(sqlStatement);
+            while (resultSet.next()) {
+                String name = resultSet.getString("name");
+                String type = getTypeName(resultSet.getInt("type_id"));
+                Participant p = new Participant(name, type);
+                participants.add(p);
             }
+
         } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+            Configuration.instance.getLogger().printError(sqlException.getMessage());
         }
         return participants;
     }
@@ -231,20 +258,19 @@ public enum DBService implements IDBService {
     public List<Channel> getChannels() {
         List<Channel> channelList = new ArrayList<>();
 
-        try (Statement statement = conn.createStatement()) {
-            String sqlStatement = "SELECT * from channel";
-            try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
-                while (resultSet.next()) {
-                    int participant1ID = resultSet.getInt("participant_01");
-                    int participant2ID = resultSet.getInt("participant_02");
-                    Participant participantA = getParticipant(participant1ID);
-                    Participant participantB = getParticipant(participant2ID);
-                    channelList.add(new Channel(resultSet.getString("name"), participantA, participantB));
-                }
+        try {
+            ResultSet resultSet = db.executeQuery("SELECT * from channel");
+            while (resultSet.next()) {
+                int participant1ID = resultSet.getInt("participant_01");
+                int participant2ID = resultSet.getInt("participant_02");
+                Participant participantA = getParticipant(participant1ID);
+                Participant participantB = getParticipant(participant2ID);
+                channelList.add(new Channel(resultSet.getString("name"), participantA, participantB));
             }
-        } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printError(exception.getMessage());
         }
+
         return channelList;
     }
 
@@ -252,89 +278,90 @@ public enum DBService implements IDBService {
     public List<PostboxMessage> getPostboxMessages(String participant) {
         List<PostboxMessage> msgList = new ArrayList<>();
         if (!participantExists(participant)) {
-            System.out.println("Couldn't get postbox message, participant wasn't found.");
+            Configuration.instance.getLogger().printWarning("Couldn't get postbox message, participant wasn't found.");
         }
-        try (Statement statement = conn.createStatement()) {
-            String sqlStatement = "SELECT * from POSTBOX_" + participant;
-            try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
-                while (resultSet.next()) {
-                    int partFromID = resultSet.getInt("participant_from_id");
-                    String partFromName = getParticipantName(partFromID);
-                    Participant partFrom = new Participant(partFromName, getOneParticipantType(partFromName));
-                    Participant partTo = new Participant(participant, getOneParticipantType(participant));
-                    String timestamp = Integer.toString(resultSet.getInt("timestamp"));
-                    String message = resultSet.getString("message");
-                    PostboxMessage pbM = new PostboxMessage(partFrom, partTo, message, timestamp);
-                    msgList.add(pbM);
-                }
+
+        try {
+            ResultSet resultSet = db.executeQuery("SELECT * from POSTBOX_" + participant);
+            while (resultSet.next()) {
+                int partFromID = resultSet.getInt("participant_from_id");
+                String partFromName = getParticipantName(partFromID);
+                Participant partFrom = new Participant(partFromName, getOneParticipantType(partFromName));
+                Participant partTo = new Participant(participant, getOneParticipantType(participant));
+                String timestamp = Integer.toString(resultSet.getInt("timestamp"));
+                String message = resultSet.getString("message");
+                PostboxMessage pbM = new PostboxMessage(partFrom, partTo, message, timestamp);
+                msgList.add(pbM);
             }
-        } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printError(exception.getMessage());
         }
+
         return msgList;
     }
 
     @Override
     public Channel getChannel(String participantA, String participantB) {
-        try (Statement statement = conn.createStatement()) {
-            int partAID = getParticipantID(participantA);
-            int partBID = getParticipantID(participantB);
-            String sql = MessageFormat.format(
-                    "SELECT name from channel where (participant_01=''{0}'' AND participant_02=''{1}'') or (participant_01=''{1}'' AND participant_02=''{0}'')",
-                    partAID, partBID);
-            String channelName;
-            try (ResultSet resultSet = statement.executeQuery(sql)) {
-                if (!resultSet.next()) {
-                    throw new SQLException("No channel found with participants: " + participantA + " & " + participantB);
-                }
-                channelName = resultSet.getString("name");
+        int partAID = getParticipantID(participantA);
+        int partBID = getParticipantID(participantB);
+
+        String sql = MessageFormat.format("SELECT name from channel where (participant_01=''{0}'' AND participant_02=''{1}'') or (participant_01=''{1}'' AND participant_02=''{0}'')", partAID, partBID);
+        String channelName;
+
+        try {
+            ResultSet resultSet = db.executeQuery(sql);
+            if (!resultSet.next()) {
+                throw new SQLException("No channel found with participants: " + participantA + " & " + participantB);
             }
+            channelName = resultSet.getString("name");
             return new Channel(channelName, getOneParticipant(participantA), getOneParticipant(participantB));
-        } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printError(exception.getMessage());
         }
+
+
         return null;
     }
 
     public Channel getChannel(String channelName) {
-        try (Statement statement = conn.createStatement()) {
-            String sql = String.format("SELECT name, participant_01, participant_02 FROM channel WHERE name='%s'", channelName);
-            int part1Id;
-            int part2Id;
-            try (ResultSet resultSet = statement.executeQuery(sql)) {
-                if (!resultSet.next()) {
-                    throw new SQLException("No channel found with name: " + channelName);
-                }
-                part1Id = resultSet.getInt("participant_01");
-                part2Id = resultSet.getInt("participant_02");
+        int part1Id;
+        int part2Id;
+
+        try {
+            ResultSet resultSet = db.executeQuery(String.format("SELECT name, participant_01, participant_02 FROM channel WHERE name='%s'", channelName));
+            if (!resultSet.next()) {
+                throw new SQLException("No channel found with name: " + channelName);
             }
+            part1Id = resultSet.getInt("participant_01");
+            part2Id = resultSet.getInt("participant_02");
             return new Channel(channelName, getParticipant(part1Id), getParticipant(part2Id));
         } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+            Configuration.instance.getLogger().printError(sqlException.getMessage());
         }
         return null;
     }
 
     @Override
     public String getOneParticipantType(String participantName) {
-        if (participantName == null) return null;
+        if (participantName == null)
+            return "";
+
         participantName = participantName.toLowerCase();
         int typeID = -1;
-        try (Statement statement = conn.createStatement()) {
-            String sqlStatement = "SELECT TYPE_ID from PARTICIPANTS where name='" + participantName + "'";
-            try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
-                if (!resultSet.next()) {
-                    throw new SQLException(participantName + " participant wasn't found.");
-                }
-                typeID = resultSet.getInt("TYPE_ID");
-            }
-            String typeName = getTypeName(typeID);
-            return typeName;
 
-        } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+        try {
+            ResultSet resultSet = db.executeQuery("SELECT TYPE_ID from PARTICIPANTS where name='" + participantName + "'");
+            if (!resultSet.next()) {
+                throw new SQLException(participantName + " participant wasn't found.");
+            }
+            typeID = resultSet.getInt("TYPE_ID");
+            return getTypeName(typeID);
+
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printError(exception.getMessage());
         }
-        return null;
+
+        return "";
     }
 
     @Override
@@ -348,17 +375,16 @@ public enum DBService implements IDBService {
 
     @Override
     public boolean channelExists(String channelName) {
-        try (Statement statement = conn.createStatement()) {
-            String sqlStatement = "SELECT name from channel where LOWER(name)='" + channelName.toLowerCase() + "'";
-            try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
-                if (!resultSet.next()) {
-                    throw new SQLException(channelName + " channel wasn't found");
-                }
+        try {
+            ResultSet resultSet = db.executeQuery("SELECT name from channel where LOWER(name)='" + channelName.toLowerCase() + "'");
+            if (!resultSet.next()) {
+                throw new SQLException(channelName + " channel wasn't found");
             }
             return true;
         } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+            Configuration.instance.getLogger().printError(sqlException.getMessage());
         }
+
         return false;
     }
 
@@ -370,88 +396,101 @@ public enum DBService implements IDBService {
 
 
     private int getTypeID(String name) {
-        try (Statement statement = conn.createStatement()) {
-            name = name.toLowerCase();
-            String sqlStatement = "SELECT ID from TYPES where lower(name)=lower('" + name + "')";
-
-            try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
-                if (!resultSet.next()) {
-                    throw new SQLException(name + " wasn't found in Type-Table");
-                }
-
-                return resultSet.getInt("ID");
+        name = name.toLowerCase();
+        try {
+            ResultSet resultSet = db.executeQuery("SELECT ID from TYPES where name='" + name + "'");
+            if (!resultSet.next()) {
+                throw new SQLException(name + " wasn't found in Type-Table");
             }
-
+            return resultSet.getInt("ID");
         } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+            Configuration.instance.getLogger().printWarning(sqlException.getMessage());
         }
 
         return -1;
     }
 
     private int getParticipantID(String name) {
-        try (Statement statement = conn.createStatement()) {
-            name = name.toLowerCase();
-            String sqlStatement = "SELECT ID from PARTICIPANTS where name='" + name + "'";
-            try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
-                if (!resultSet.next()) {
-                    throw new SQLException(name + " wasn't found in Participant-Table.");
-                }
-                return resultSet.getInt("ID");
+        try {
+            ResultSet resultSet = db.executeQuery("SELECT ID from PARTICIPANTS where name='" + name + "'");
+            if (!resultSet.next()) {
+                throw new SQLException(name + " wasn't found in Participant-Table.");
             }
+            return resultSet.getInt("ID");
         } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+            Configuration.instance.getLogger().printError(sqlException.getMessage());
         }
         return -1;
     }
 
     private String getParticipantName(int participantID) {
-        try (Statement statement = conn.createStatement()) {
-            String sqlStatement = "SELECT name from participants where ID=" + participantID;
-            try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
-                if (!resultSet.next()) {
-                    throw new SQLException(" Name of participant wasn't found for ID:" + participantID);
-                }
-                return resultSet.getString("name");
+        try {
+            ResultSet resultSet = db.executeQuery("SELECT name from participants where ID=" + participantID);
+            if (!resultSet.next()) {
+                throw new SQLException(" Name of participant wasn't found for ID:" + participantID);
             }
-        } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+            return resultSet.getString("name");
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printError(exception.getMessage());
         }
-        return null;
+
+        return "";
     }
 
     private String getTypeName(int typeID) {
-        try (Statement statement = conn.createStatement()) {
-            String sqlStatement = "SELECT name from TYPES where ID=" + typeID;
-            try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
-                if (!resultSet.next()) {
-                    throw new SQLException("No name of type found for ID: " + typeID);
-                }
-                return resultSet.getString("name");
+        try {
+            ResultSet resultSet = db.executeQuery(String.format("SELECT name from TYPES where ID=%d", typeID));
+            if (!resultSet.next()) {
+                throw new SQLException("No name of type found for ID: " + typeID);
             }
-        } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+            return resultSet.getString("name");
+        } catch (SQLException exception) {
+            Configuration.instance.getLogger().printError(exception.getMessage());
         }
-        return null;
+
+        return "";
     }
 
     private int getAlgorithmID(String algorithm) {
-        try (Statement statement = conn.createStatement()) {
-            String sqlStatement = "SELECT ID from ALGORITHMS where LOWER(name)=LOWER('" + algorithm + "')";
-            try (ResultSet resultSet = statement.executeQuery(sqlStatement)) {
-                if (!resultSet.next()) {
-                    throw new SQLException(algorithm + " algorithm wasn't found in Algorithm Table");
-                }
-                return resultSet.getInt("ID");
+        try {
+            ResultSet resultSet = db.executeQuery(String.format("SELECT ID from ALGORITHMS where LOWER(name)=LOWER('%s')", algorithm));
+            if (!resultSet.next()) {
+                throw new SQLException((algorithm + " algorithm wasn't found in Algorithm Table"));
             }
+            return resultSet.getInt("ID");
         } catch (SQLException sqlException) {
-            System.out.println(sqlException.getMessage());
+            Configuration.instance.getLogger().printError(sqlException.getMessage());
         }
+
         return -1;
     }
 
     private Participant getParticipant(int partID) {
         String name = getParticipantName(partID);
         return new Participant(name, getOneParticipantType(name));
+    }
+
+    public void createInitialValues() {
+        insertType("normal");
+        insertType("intruder");
+
+        var branch_hkg = new Participant("branch_hkg","normal");
+        var branch_wuh = new Participant("branch_wuh","normal");
+        var branch_cpt = new Participant("branch_cpt","normal");
+        var branch_syd = new Participant("branch_syd","normal");
+        var branch_sfo = new Participant("branch_sfo","normal");
+        var msa = new Participant("msa","intruder");
+
+        insertParticipant(branch_hkg);
+        insertParticipant(branch_wuh);
+        insertParticipant(branch_cpt);
+        insertParticipant(branch_syd);
+        insertParticipant(branch_sfo);
+        insertParticipant(msa);
+
+        insertChannel(new Channel("hkg_wuh",branch_hkg,branch_wuh));
+        insertChannel(new Channel("hkg_cpt",branch_hkg,branch_cpt));
+        insertChannel(new Channel("cpt_syd",branch_cpt,branch_syd));
+        insertChannel(new Channel("syd_sfo",branch_syd,branch_sfo));
     }
 }

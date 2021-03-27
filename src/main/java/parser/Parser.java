@@ -26,7 +26,8 @@ public class Parser implements IParser {
                     new IntrudeChannelParser(),
                     new CreateChannelParser(),
                     new DecryptParser(),
-                    new EncryptParser());
+                    new EncryptParser(),
+                    new DropChannelParser());
         }
        return parsers;
     }

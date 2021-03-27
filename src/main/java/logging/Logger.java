@@ -33,7 +33,7 @@ public class Logger {
 
         //if(curLogLevel.getValue() <= logLevel.getValue()) {
             var datetime = LocalDateTime.now();
-            output.println("[" + datetime.toString() + "] [" + logLevel.name() + "]: " + outputString);
+            output.println("[" + datetime.toString() + "][" + logLevel.name() + "]: " + outputString);
         //}
     }
 

@@ -1,5 +1,6 @@
 
 import java.text.DecimalFormat;
+import java.util.Locale;
 
 public class ShiftCracker {
     // static instance
@@ -35,6 +36,8 @@ public class ShiftCracker {
             System.exit(0);
         }
 
+        encryptedMessage = encryptedMessage.trim().toUpperCase();
+
         char[] sourceText = new char[encryptedMessage.length()];
         int[] unicode = new int[encryptedMessage.length()];
         int[] unicodeCopy = new int[encryptedMessage.length()];
@@ -56,7 +59,9 @@ public class ShiftCracker {
         StringBuilder sb = new StringBuilder();
 
         for (int shift = 1; shift <= 25; shift++) {
-            sb.append(smartShift(shift, unicode, unicodeCopy));
+            String crackedMessage = smartShift(shift, unicode, unicodeCopy);
+            if(crackedMessage != null)
+                sb.append(crackedMessage + "\n");
         }
 
         return sb.toString();
@@ -138,7 +143,8 @@ public class ShiftCracker {
         }
 
         if (eFrequency / frequency >= 0.05 || aFrequency / frequency >= 0.05 || iFrequency / frequency >= 0.05 || oFrequency / frequency >= 0.05 || uFrequency / frequency >= 0.05) {
-            return (stringBuilder.toString());
+            //System.out.println();
+            return stringBuilder.toString();
             //System.out.println("\t\tA : " + decimalFormat.format(aFrequency / frequency));
             //System.out.println("\t\tE : " + decimalFormat.format(eFrequency / frequency));
             //System.out.println("\t\tI : " + decimalFormat.format(iFrequency / frequency));
@@ -146,6 +152,6 @@ public class ShiftCracker {
             //System.out.println("\t\tU : " + decimalFormat.format(uFrequency / frequency));
         }
 
-        return "";
+        return null;
     }
 }

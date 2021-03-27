@@ -74,7 +74,6 @@ public class GUI extends Application {
             case F3:
                 if(guiController.isDebuggingEnabled()){
                     guiController.disableDebugging();
-                    Configuration.instance.getGUILogger().printInfo("testststs!!!");
                 } else {
                     guiController.enableDebugging();
                 }
@@ -92,7 +91,7 @@ public class GUI extends Application {
 
     public void setOutputText(String text){
         outputArea.appendText(text);
-        outputArea.appendText("\n");
+        outputArea.setScrollTop(Double.MAX_VALUE);
     }
 
     public String getOutputText(){

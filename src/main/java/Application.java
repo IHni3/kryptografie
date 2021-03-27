@@ -14,6 +14,7 @@ public class Application {
 
     public void init(){
         dbService.setupConnection();
+        dbService.createAllTables();
     }
 
     private void startupGUI(){

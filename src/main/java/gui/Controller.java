@@ -68,20 +68,18 @@ public class Controller {
     }
 
     public void executeCommand(String inputString){
-
         try {
             ICommand command = parser.parse(inputString);
             var result = command.execute();
-            displayText(result);
+            Configuration.instance.getGUILogger().printInfo(result);
         } catch (ParserException e) {
             Configuration.instance.getGUILogger().printWarning("Could not parse command!");
             e.printStackTrace();
             //TODO
         } catch (CommandExecutionException e) {
-
+            Configuration.instance.getGUILogger().printWarning(e.getMessage());
             e.printStackTrace();
         }
-
     }
 
     public void outputLastLogFile() {
