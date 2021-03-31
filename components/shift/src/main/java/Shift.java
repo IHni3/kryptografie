@@ -38,34 +38,54 @@ public class Shift {
 
     //Encrypt Message with Key from JSON File
     private String innerEncrypt(String plainMessage, File keyfile){
-        LoggingUtils.prepareLogger(logger,"encrypt", "shiftbase");
-        logger.printInfo("It works!!");
+        LoggingUtils.prepareLogger(logger, "encrypt", "shiftbase");
 
+        logger.printInfo("shift encrytion started");
+
+        logger.printInfo("encrypting text: \"" + plainMessage + "\"");
+
+        logger.printInfo("reading json keyfile: \"" + keyfile + "\"");
         this.key = readJsonFile(keyfile);
+        logger.printInfo("keyfile successfully read");
+
+        logger.printInfo("extracted shift value is \"" + key + "\"");
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        for(int i = 0; i< plainMessage.length(); i++){
+        for (int i = 0; i < plainMessage.length(); i++) {
             char character = (char) (plainMessage.codePointAt(i) + key);
+            logger.printInfo("shifting character \"" + plainMessage.charAt(i) + "\" to \"" + character + "\"");
             stringBuilder.append(character);
         }
+
+        logger.printInfo("returning encrypted text \"" + stringBuilder.toString() + "\"");
 
         return stringBuilder.toString();
     }
 
     //Decrypt Message with Key from JSON File
-    private String innerDecrypt(String encryptedMessage, File keyfile){
-        LoggingUtils.prepareLogger(logger,"decrypt", "shiftbase");
-        logger.printInfo("It works!!");
+    private String innerDecrypt(String encryptedMessage, File keyfile) {
+        LoggingUtils.prepareLogger(logger, "decrypt", "shiftbase");
 
+        logger.printInfo("shift decryption started");
+
+        logger.printInfo("decrypting text: \"" + encryptedMessage + "\"");
+
+        logger.printInfo("reading json keyfile: \"" + keyfile + "\"");
         this.key = readJsonFile(keyfile);
+        logger.printInfo("keyfile successfully read");
+
+        logger.printInfo("extracted shift value is \"" + key + "\"");
 
         StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < encryptedMessage.length(); i++) {
             char character = (char) (encryptedMessage.codePointAt(i) - key);
+            logger.printInfo("shifting character \"" + plainMessage.charAt(i) + "\" to \"" + character + "\"");
             stringBuilder.append(character);
         }
+
+        logger.printInfo("returning decrypted text \"" + stringBuilder.toString() + "\"");
 
         return stringBuilder.toString();
     }
