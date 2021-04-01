@@ -8,35 +8,36 @@ package commands;
 
 import database.DBService;
 
-import java.util.stream.Collectors;
-
 public class IntrudeChannelCommand implements ICommand {
 
-    private String channelName;
-    private String participant;
+    private final String channelName;
+    private final String intruderName;
 
-    public IntrudeChannelCommand(String channelName, String participant) {
+    public IntrudeChannelCommand(String channelName, String intruderName) {
         this.channelName = channelName;
-        this.participant = participant;
+        this.intruderName = intruderName;
     }
 
     @Override
     public String execute() throws CommandExecutionException {
 
-        var intruder = DBService.instance.getOneParticipant(participant);
+        var intruder = DBService.instance.getOneParticipant(intruderName);
 
-        if (intruder == null){
-            throw new CommandExecutionException(String.format("intruder %s could not be found", participant));
+        if (intruder == null) {
+            return String.format("intruder %s could not be found", intruderName);
+        }
+
+        if (!intruder.getType().equals("intruder")) {
+            return String.format("%s is no intruder", intruderName);
         }
 
         var channel = DBService.instance.getChannel(channelName);
-
-        if (channel == null){
-            throw new CommandExecutionException(String.format("channel %s could not be found", channelName));
+        if (channel == null) {
+            return String.format("channel %s could not be found", channelName);
         }
 
         channel.intrude(intruder);
 
-        return null;
+        return String.format("intruder %s registered for channel %s", intruderName, channelName);
     }
 }

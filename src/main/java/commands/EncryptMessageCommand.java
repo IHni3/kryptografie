@@ -63,6 +63,7 @@ public class EncryptMessageCommand implements ICommand{
             var method = port.getClass().getDeclaredMethod("encrypt",String.class, File.class);
             return (String) method.invoke(port, message, new File(Configuration.instance.keyFilesDirectory + Configuration.instance.fileSeparator + keyfile));
         } catch (Exception exception) {
+            Configuration.instance.getLogger().printError(exception.getMessage());
             throw new CommandExecutionException("calling method of component failed!", exception);
         }
     }

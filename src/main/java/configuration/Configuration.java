@@ -80,7 +80,7 @@ public enum Configuration {
     }
 
     // Intruded Channels
-    public Map<String, String> intrudedChannels = new HashMap<>();
+    public Map<String, List<String>> intrudedChannels = new HashMap<>();
 
 
 }

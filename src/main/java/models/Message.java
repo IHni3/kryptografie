@@ -6,23 +6,32 @@
 
 package models;
 
+import configuration.AlgorithmType;
+
+import java.util.Date;
+
 public class Message {
     private final Participant participantSender;
     private final Participant participantReceiver;
-    private final String algorithm;
+    private final AlgorithmType algorithm;
     private final String keyfile;
-    private final String timestamp;
+    private final long timestamp;
     private final String plainMessage;
     private final String encryptedMessage;
 
-    public Message(Participant participantSender, Participant participantReceiver, String algorithm, String keyfile, String timestamp, String plainMessage, String encryptedMessage){
+    public Message(Participant participantSender, Participant participantReceiver, AlgorithmType algorithm, String keyfile, String plainMessage, String encryptedMessage){
         this.participantSender = participantSender;
         this.participantReceiver = participantReceiver;
         this.algorithm = algorithm;
         this.keyfile = keyfile;
-        this.timestamp = timestamp;
+        this.timestamp = unixTimestampNow();
         this.plainMessage = plainMessage;
         this.encryptedMessage = encryptedMessage;
+    }
+
+    private static long unixTimestampNow() {
+        Date now = new Date();
+        return now.getTime()/1000;
     }
 
     public Participant getParticipantSender(){
@@ -33,7 +42,7 @@ public class Message {
         return this.participantReceiver;
     }
 
-    public String getAlgorithm() {
+    public AlgorithmType getAlgorithm() {
         return this.algorithm;
     }
 
@@ -41,7 +50,7 @@ public class Message {
         return this.keyfile;
     }
 
-    public String getTimestamp() {
+    public long getTimestamp() {
         return this.timestamp;
     }
 

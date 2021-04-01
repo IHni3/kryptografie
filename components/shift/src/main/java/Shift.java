@@ -81,7 +81,7 @@ public class Shift {
 
         for (int i = 0; i < encryptedMessage.length(); i++) {
             char character = (char) (encryptedMessage.codePointAt(i) - key);
-            logger.printInfo("shifting character \"" + plainMessage.charAt(i) + "\" to \"" + character + "\"");
+            logger.printInfo("shifting character \"" + encryptedMessage.charAt(i) + "\" to \"" + character + "\"");
             stringBuilder.append(character);
         }
 

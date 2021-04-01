@@ -7,10 +7,7 @@
 package database;
 
 import configuration.Configuration;
-import models.Channel;
-import models.Message;
-import models.Participant;
-import models.PostboxMessage;
+import models.*;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -112,7 +109,7 @@ public enum DBService implements IDBService {
         insertMessage(message.getParticipantSender().getName(),
                 message.getParticipantReceiver().getName(),
                 message.getPlainMessage(),
-                message.getAlgorithm(),
+                message.getAlgorithm().name(),
                 message.getEncryptedMessage(),
                 message.getKeyfile());
     }
@@ -244,7 +241,8 @@ public enum DBService implements IDBService {
             while (resultSet.next()) {
                 String name = resultSet.getString("name");
                 String type = getTypeName(resultSet.getInt("type_id"));
-                Participant p = new Participant(name, type);
+
+                Participant p = ParticipantIntruderFactory.createInstance(name, type);
                 participants.add(p);
             }
 
@@ -286,8 +284,8 @@ public enum DBService implements IDBService {
             while (resultSet.next()) {
                 int partFromID = resultSet.getInt("participant_from_id");
                 String partFromName = getParticipantName(partFromID);
-                Participant partFrom = new Participant(partFromName, getOneParticipantType(partFromName));
-                Participant partTo = new Participant(participant, getOneParticipantType(participant));
+                Participant partFrom = ParticipantIntruderFactory.createInstance(partFromName, getOneParticipantType(partFromName));
+                Participant partTo =  ParticipantIntruderFactory.createInstance(participant, getOneParticipantType(participant));
                 String timestamp = Integer.toString(resultSet.getInt("timestamp"));
                 String message = resultSet.getString("message");
                 PostboxMessage pbM = new PostboxMessage(partFrom, partTo, message, timestamp);
@@ -368,7 +366,7 @@ public enum DBService implements IDBService {
     public Participant getOneParticipant(String participantName) {
         participantName = participantName.toLowerCase();
         if (participantExists(participantName)) {
-            return new Participant(participantName, getOneParticipantType(participantName));
+            return ParticipantIntruderFactory.createInstance(participantName, getOneParticipantType(participantName));
         }
         return null;
     }
@@ -467,19 +465,19 @@ public enum DBService implements IDBService {
 
     private Participant getParticipant(int partID) {
         String name = getParticipantName(partID);
-        return new Participant(name, getOneParticipantType(name));
+        return ParticipantIntruderFactory.createInstance(name, getOneParticipantType(name));
     }
 
     public void createInitialValues() {
         insertType("normal");
         insertType("intruder");
 
-        var branch_hkg = new Participant("branch_hkg","normal");
-        var branch_wuh = new Participant("branch_wuh","normal");
-        var branch_cpt = new Participant("branch_cpt","normal");
-        var branch_syd = new Participant("branch_syd","normal");
-        var branch_sfo = new Participant("branch_sfo","normal");
-        var msa = new Participant("msa","intruder");
+        var branch_hkg = new Participant("branch_hkg");
+        var branch_wuh = new Participant("branch_wuh");
+        var branch_cpt = new Participant("branch_cpt");
+        var branch_syd = new Participant("branch_syd");
+        var branch_sfo = new Participant("branch_sfo");
+        var msa = new Intruder("msa");
 
         insertParticipant(branch_hkg);
         insertParticipant(branch_wuh);

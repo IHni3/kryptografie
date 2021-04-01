@@ -9,6 +9,7 @@ package commands;
 import configuration.ParticipantType;
 import database.DBService;
 import models.Participant;
+import models.ParticipantIntruderFactory;
 
 public class RegisterParticipantCommand implements ICommand{
 
@@ -27,7 +28,7 @@ public class RegisterParticipantCommand implements ICommand{
             throw new CommandExecutionException(String.format("participant %s already exists, using existing postbox_%s", name, name));
         }
 
-        Participant participant = new Participant(name, type.toString());
+        Participant participant = ParticipantIntruderFactory.createInstance(name, type.toString());
         DBService.instance.insertParticipant(participant);
 
         return "participant "+name+" with type " + type.name() + " registered and postbox_" + name + " created";

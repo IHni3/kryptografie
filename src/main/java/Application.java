@@ -17,10 +17,6 @@ public class Application {
         dbService.createAllTables();
     }
 
-    private void startupGUI(){
-
-    }
-
     private void close(){
         dbService.shutdown();
     }

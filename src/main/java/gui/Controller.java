@@ -71,7 +71,8 @@ public class Controller {
         try {
             ICommand command = parser.parse(inputString);
             var result = command.execute();
-            Configuration.instance.getGUILogger().printInfo(result);
+            if (result != null)
+                Configuration.instance.getGUILogger().printInfo(result);
         } catch (ParserException e) {
             Configuration.instance.getGUILogger().printWarning("Could not parse command!");
             e.printStackTrace();
