@@ -39,7 +39,7 @@ public class Intruder extends Participant {
             String cracked = cracker.execute();
             Configuration.instance.getGUILogger().printInfo(String.format("cracked message: %s", cracked));
         } catch (CommandExecutionException e) {
-            Configuration.instance.getGUILogger().printInfo(String.format("cracking encrypted message \"%s\" failed! cause: ", message.getMessage(), e.getMessage()));
+            Configuration.instance.getGUILogger().printInfo(String.format("cracking encrypted message \"%s\" failed! cause: %s", message.getMessage(), e.getMessage()));
         }
     }
 

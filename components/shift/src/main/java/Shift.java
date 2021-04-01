@@ -16,10 +16,6 @@ public class Shift {
     // port
     public Port port;
 
-    int key;
-    String plainMessage;
-    String encryptedMessage;
-
     // private constructor
     private Shift() {
         port = new Port();
@@ -45,7 +41,7 @@ public class Shift {
         logger.printInfo("encrypting text: \"" + plainMessage + "\"");
 
         logger.printInfo("reading json keyfile: \"" + keyfile + "\"");
-        this.key = readJsonFile(keyfile);
+        final int key = readJsonFile(keyfile);
         logger.printInfo("keyfile successfully read");
 
         logger.printInfo("extracted shift value is \"" + key + "\"");
@@ -72,7 +68,7 @@ public class Shift {
         logger.printInfo("decrypting text: \"" + encryptedMessage + "\"");
 
         logger.printInfo("reading json keyfile: \"" + keyfile + "\"");
-        this.key = readJsonFile(keyfile);
+        final int key = readJsonFile(keyfile);
         logger.printInfo("keyfile successfully read");
 
         logger.printInfo("extracted shift value is \"" + key + "\"");
@@ -93,19 +89,17 @@ public class Shift {
 
     //Read JSON File into Integer Key
     private int readJsonFile(File keyfile){
-        int key;
         try {
             FileReader reader = new FileReader(keyfile);
             JSONParser jsonParser = new JSONParser();
 
             JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
-            key = Integer.parseInt(jsonObject.get("key").toString());
+            final int key = Integer.parseInt(jsonObject.get("key").toString());
+            return key;
 
         } catch(Exception ex){
             throw new RuntimeException(ex);
         }
-
-        return key;
     }
 
     private void innerEnabledDebuggingMode() {
