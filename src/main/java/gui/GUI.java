@@ -1,13 +1,10 @@
-/*
- * Copyright (c) 2021.
- * Author 6143217
- * All rights reserved
- */
-
 package gui;
 
 import configuration.Configuration;
+import gui.TextAreaHandler;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -17,19 +14,11 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import parser.CompactParser;
 
 
 public class GUI extends Application {
-
-    TextArea outputArea;
-    TextArea inputArea;
-
-    private Controller guiController;
-
     public void start(Stage primaryStage) {
-
-        guiController = new Controller(this);
-
         primaryStage.setTitle("MSA | Mergentheim/Mosbach Security Agency");
 
         HBox hBox = new HBox();
@@ -46,62 +35,52 @@ public class GUI extends Application {
         TextArea commandLineArea = new TextArea();
         commandLineArea.setWrapText(true);
 
-        outputArea = new TextArea();
+        TextArea outputArea = new TextArea();
         outputArea.setWrapText(true);
         outputArea.setEditable(false);
 
         Configuration.instance.textAreaLogger.addHandler(new TextAreaHandler(outputArea));
 
-        executeButton.setOnAction(event -> guiController.executeCommand(inputArea.getText()));
+        executeButton.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                System.out.println(commandLineArea.getText());
+                execute(commandLineArea.getText());
+            }
+        });
 
-        closeButton.setOnAction(event -> guiController.closeGUI());
-
-        inputArea = new TextArea();
-        inputArea.setWrapText(true);
+        closeButton.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent actionEvent) {
+                System.out.println("[close] pressed");
+                System.exit(0);
+            }
+        });
 
         hBox.getChildren().addAll(executeButton, closeButton);
 
-        VBox vBox = new VBox(15);
-        vBox.setPadding(new Insets(20,20,20,20));
-        vBox.getChildren().addAll(hBox, inputArea, outputArea);
+        VBox vbox = new VBox(20);
+        vbox.setPadding(new Insets(25, 25, 25, 25));
+        vbox.getChildren().addAll(hBox, commandLineArea, outputArea);
 
-        Scene guiScene = new Scene(vBox, 1000, 500);
-        primaryStage.setScene(guiScene);
+        Scene scene = new Scene(vbox, 950, 500);
+        primaryStage.setScene(scene);
         primaryStage.show();
 
-        guiScene.addEventHandler(KeyEvent.KEY_PRESSED, keyInput -> keyPressed(keyInput.getCode()));
-    }
-
-    private void keyPressed(KeyCode keyCode){
-        switch(keyCode){
-            case F3:
-                if(guiController.isDebuggingEnabled()){
-                    guiController.disableDebugging();
-                } else {
-                    guiController.enableDebugging();
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>()
+        {
+            public void handle(final KeyEvent keyEvent)
+            {
+                if(keyEvent.getCode() == KeyCode.F3){
+                    System.out.println("Debug key triggered");
+                } else if(keyEvent.getCode() == KeyCode.F8) {
+                    System.out.println("Save Logfile Key");
+                } else if(keyEvent.getCode().equals(KeyCode.F5)){
+                    execute(commandLineArea.getText());
                 }
-                break;
-            case F5:
-                guiController.executeCommand(inputArea.getText());
-                break;
-            case F8:
-                guiController.outputLastLogFile();
-                break;
-
-            default:
-        }
+            }
+        });
     }
 
-    public void setOutputText(String text){
-        outputArea.appendText(text);
-        outputArea.appendText("\n");
-    }
-
-    public String getOutputText(){
-        return outputArea.getText();
-    }
-
-    public void clearText(){
-        outputArea.setText("");
+    private void execute(String command){
+        CompactParser.evaluateCommand(command);
     }
 }

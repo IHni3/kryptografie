@@ -1,15 +1,10 @@
-/*
- * Copyright (c) 2021.
- * Author 6143217
- * All rights reserved
- */
-
 package database;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
+import configuration.Configuration;
+import database.DBConfiguration;
+
+import java.sql.*;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public enum HSQLDB {
     instance;
@@ -28,14 +23,18 @@ public enum HSQLDB {
         }
     }
 
-    private synchronized void update(String sqlStatement) {
-        try {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(sqlStatement);
-            statement.close();
-        } catch (SQLException sqle) {
-            System.out.println(sqle.getMessage());
-        }
+    public synchronized int update(String sqlStatement) throws SQLException {
+        Configuration.instance.textAreaLogger.info("executing: " + sqlStatement);
+
+        Statement statement = connection.createStatement();
+        var ret = statement.executeUpdate(sqlStatement);
+        statement.close();
+        return ret;
+    }
+
+    public synchronized ResultSet executeQuery(final String sqlStatement) throws SQLException {
+        Statement statement = connection.createStatement();
+        return statement.executeQuery(sqlStatement);
     }
 
     /*
@@ -43,7 +42,7 @@ public enum HSQLDB {
        id TINYINT       NOT NULL PK
        name VARCHAR(10) NOT NULL unique
     */
-    public void createTableAlgorithms() {
+    public void createTableAlgorithms() throws SQLException {
         System.out.println("--- createTableAlgorithms");
 
         StringBuilder sqlStringBuilder01 = new StringBuilder();
@@ -66,7 +65,7 @@ public enum HSQLDB {
        id TINYINT       NOT NULL PK
        name VARCHAR(10) NOT NULL unique
     */
-    public void createTableTypes() {
+    public void createTableTypes() throws SQLException {
         System.out.println("--- createTableTypes");
 
         StringBuilder sqlStringBuilder01 = new StringBuilder();
@@ -90,7 +89,7 @@ public enum HSQLDB {
        name VARCHAR(50) NOT NULL unique
        type_id TINYINT  NOT NULL FK
     */
-    public void createTableParticipants() {
+    public void createTableParticipants() throws SQLException {
         System.out.println("--- createTableParticipants");
 
         StringBuilder sqlStringBuilder01 = new StringBuilder();
@@ -124,7 +123,7 @@ public enum HSQLDB {
        participant_01 TINYINT NOT NULL FK
        participant_02 TINYINT NOT NULL FK
     */
-    public void createTableChannel() {
+    public void createTableChannel() throws SQLException {
         System.out.println("--- createTableChannel");
 
         StringBuilder sqlStringBuilder01 = new StringBuilder();
@@ -165,7 +164,7 @@ public enum HSQLDB {
       keyfile             VARCHAR(20) NOT NULL
       timestamp           INT
     */
-    public void createTableMessages() {
+    public void createTableMessages() throws SQLException {
         System.out.println("--- createTableMessages");
 
         StringBuilder sqlStringBuilder01 = new StringBuilder();
@@ -215,7 +214,7 @@ public enum HSQLDB {
        message             VARCHAR(50) NOT NULL
        timestamp           INT
      */
-    public void createTablePostbox(String participantName) {
+    public void createTablePostbox(String participantName) throws SQLException {
         String table = "postbox_" + participantName;
         System.out.println("--- createTablePostbox_" + participantName);
 
@@ -251,7 +250,7 @@ public enum HSQLDB {
         }
     }
 
-    public void setupDatabase() {
+    public void setupDatabase() throws SQLException {
         setupConnection();
         createTableAlgorithms();
         createTableTypes();
@@ -259,9 +258,5 @@ public enum HSQLDB {
         createTableChannel();
         createTableMessages();
         createTablePostbox("msa");
-    }
-
-    public void outerUpdate(String sqlStatement){
-        update(sqlStatement);
     }
 }

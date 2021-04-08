@@ -19,14 +19,10 @@ public enum Configuration {
     public final String fileSeparator = System.getProperty("file.separator");
     public final String commonPathToJavaArchive = userDirectory + fileSeparator + "components" + fileSeparator;
 
-    // Keyfile Directory
-    public final String keyFilesDirectory = userDirectory + fileSeparator + "keyfiles";
-
-    // Shift
-    public final String pathToShiftBaseJavaArchive = commonPathToJavaArchive + "shift" + fileSeparator + "build"
+    // Paths
+    public final String keyFiles = userDirectory + fileSeparator + "keyfiles";
+    public final String shiftJar = commonPathToJavaArchive + "shift" + fileSeparator + "build"
             + fileSeparator + "libs" + fileSeparator + "shift.jar";
-
-    // ShiftCracker
     public final String pathToShiftCrackerJavaArchive = commonPathToJavaArchive + "shift_cracker" + fileSeparator + "build"
             + fileSeparator + "libs" + fileSeparator + "shift_cracker.jar";
 
@@ -71,11 +67,14 @@ public enum Configuration {
 
     }
 
-    //Test Field Logger
-    public java.util.logging.Logger textAreaLogger = java.util.logging.Logger.getLogger("test.test");
+    //Text Field Logger
+    public java.util.logging.Logger textAreaLogger = java.util.logging.Logger.getLogger("textarea");
 
     // Intruded Channels
     public Map<String, String> intrudedChannels = new HashMap<>();
+
+    //File Logger
+    LoggingHandler handler = new LoggingHandler();
 
 
 }

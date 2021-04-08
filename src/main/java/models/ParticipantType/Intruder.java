@@ -17,14 +17,14 @@ public class Intruder implements IParticipantType {
 
     @Override
     public void receiveMessage(BusMessage message) {
-        ICommand cracker = message.getAlgorithm().equals(AlgorithmType.RSA) ? new CrackMessageRsaCommand(message.getMessage(), message.getKeyfile()) :
-                                                                              new CrackMessageShiftCommand(message.getMessage());
+        CommandUtils utils = new CommandUtils();
+
         String timestamp = String.valueOf(new Date().getTime()/1000);
         DBService.instance.insertPostboxMessage(new PostboxMessage(message.getSender(), message.getRecipient(), "unknown", timestamp));
         try{
-            String cracked = cracker.execute();
+            String cracked = message.getAlgorithm().equals(AlgorithmType.RSA) ? utils.crackRSA(message.getMessage(), message.getKeyfile()) : utils.crackShift(message.getMessage());
             Configuration.instance.textAreaLogger.info(String.format("cracked message: %s", cracked));
-        } catch (CommandExecutionException e){
+        } catch (Exception e){
             Configuration.instance.textAreaLogger.info(String.format("cracking encrypted message \"%s\"", message.getMessage()));
         }
 
