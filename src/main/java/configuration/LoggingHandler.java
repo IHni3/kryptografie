@@ -9,12 +9,14 @@ import java.util.logging.Logger;
 public class LoggingHandler {
     Handler handler;
     Logger logger;
+    Boolean enabled;
 
     public LoggingHandler(){
         logger = java.util.logging.Logger.getLogger("file");
     }
 
     public void newLogfile(String algorithmType, String direction){
+        if (!enabled) return;
         if (handler != null)
             logger.removeHandler(handler);
         try {
@@ -25,9 +27,14 @@ public class LoggingHandler {
         }
     }
 
-    public void disableLogging(){
-        if (handler != null){
-            logger.removeHandler(handler);
+    public void switchLogging(){
+        if (enabled) {
+            enabled = false;
+            if (handler != null){
+                logger.removeHandler(handler);
+            }
+        } else {
+            enabled = true;
         }
     }
 

@@ -3,6 +3,7 @@ package gui;
 import configuration.Configuration;
 import gui.TextAreaHandler;
 import javafx.application.Application;
+import javafx.css.Match;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,6 +16,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import parser.CompactParser;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class GUI extends Application {
@@ -70,9 +79,9 @@ public class GUI extends Application {
             public void handle(final KeyEvent keyEvent)
             {
                 if(keyEvent.getCode() == KeyCode.F3){
-                    System.out.println("Debug key triggered");
+                    Configuration.instance.loggingHandler.switchLogging();
                 } else if(keyEvent.getCode() == KeyCode.F8) {
-                    System.out.println("Save Logfile Key");
+                    System.out.println("Load Logfile Key");
                 } else if(keyEvent.getCode().equals(KeyCode.F5)){
                     execute(commandLineArea.getText());
                 }
@@ -82,5 +91,36 @@ public class GUI extends Application {
 
     private void execute(String command){
         CompactParser.evaluateCommand(command);
+    }
+
+    private void loadLogfile(TextArea logArea){
+        List<String> lines = new ArrayList<>();
+        BufferedReader br;
+        try {
+
+            File logDir = new File(Configuration.instance.logDir);
+            var files = logDir.listFiles();
+            assert files != null;
+            var latest = Arrays.stream(files).max(Comparator.comparing(f -> f.lastModified()));
+            assert latest.isPresent();
+            br = new BufferedReader(new FileReader(latest.get()));
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+            br.close();
+
+        } catch (FileNotFoundException e) {
+            Configuration.instance.textAreaLogger.info("problems occurred while loading log file");
+            return;
+        } catch (IOException e) {
+            Configuration.instance.textAreaLogger.info("problems occurred while loading log file");
+            return;
+        }
+
+        for (String line : lines){
+            logArea.appendText(line);
+        }
+
     }
 }
