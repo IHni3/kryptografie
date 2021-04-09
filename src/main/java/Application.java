@@ -1,3 +1,4 @@
+import configuration.Configuration;
 import database.DBService;
 import gui.GUI;
 
@@ -13,6 +14,7 @@ public class Application {
     }
 
     public void init(){
+        Configuration.instance.textAreaLogger.setUseParentHandlers(false);
         dbService.setupConnection();
     }
 

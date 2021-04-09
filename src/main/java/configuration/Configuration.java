@@ -6,8 +6,6 @@
 
 package configuration;
 
-import logging.Logger;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +13,7 @@ import java.util.Map;
 public enum Configuration {
     instance;
 
-    private final String jarPath = "jars/";
+    public final String jarPath = "jars/";
 
     // Paths
     public final String keyFiles = "keyfiles/";
@@ -31,6 +29,8 @@ public enum Configuration {
     public final String dbUsername = "sa";
     public final String dbPassword = "";
 
+    //JDK Path
+    public final String jdkPath = "/home/liam/.local/java/jdk-15.0.2/bin/";
     // Log-Directory
     public final String logDir =  "log";
 

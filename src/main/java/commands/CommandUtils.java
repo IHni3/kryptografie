@@ -17,6 +17,7 @@ import models.Participant;
 import models.ParticipantType.Intruder;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.concurrent.*;
@@ -145,13 +146,20 @@ public class CommandUtils {
     }
 
     public String encrypt(String message, AlgorithmType algorithmType, String keyfile){
-        File keyfileFile = new File(System.getProperty("user.dir") + "/keyfiles/" + keyfile);
-        String jarName = algorithmType.equals("RSA") ? "rsa" : "shift";
-        String className = algorithmType.equals("RSA") ? "RSA" : "shift";
+        File keyfileFile = new File(Configuration.instance.keyFiles + keyfile);
+        String jarName = algorithmType.equals(AlgorithmType.RSA) ? "rsa" : "shift";
+        String className = algorithmType.equals(AlgorithmType.RSA) ? "RSA" : "shift";
+        if (!JarVerifier.verifie(jarName)){
+            Configuration.instance.textAreaLogger.info("jar could not be verified - not loading corrupted jar");
+            return null;
+        }
         try {
-            var port = Loader.getPort(System.getProperty("user.dir") + "/resources/"+ jarName +".jar", className);
-            var method = port.getClass().getDeclaredMethod("encrypt", BigInteger.class, BigInteger.class, String.class);
+            var port = Loader.getPort(Configuration.instance.jarPath + jarName +".jar", className);
+            var method = port.getClass().getDeclaredMethod("encrypt", String.class, File.class);
             return method.invoke(port, message, keyfileFile).toString();
+        } catch (IOException e) {
+            Configuration.instance.textAreaLogger.info("Invalid Keyfile Provided");
+            return null;
         } catch (Exception e){
             e.printStackTrace();
             return null;
@@ -159,13 +167,20 @@ public class CommandUtils {
     }
 
     public String decrypt(String message, AlgorithmType algorithmType, String keyfile){
-        File keyfileFile = new File(System.getProperty("user.dir") + "/keyfiles/" + keyfile);
-        String jarName = algorithmType.equals("RSA") ? "rsa" : "shift";
-        String className = algorithmType.equals("RSA") ? "RSA" : "shift";
+        File keyfileFile = new File(Configuration.instance.keyFiles  + keyfile);
+        String jarName = algorithmType.equals(AlgorithmType.RSA) ? "rsa" : "shift";
+        String className = algorithmType.equals(AlgorithmType.RSA) ? "RSA" : "shift";
+        if (!JarVerifier.verifie(jarName)){
+            Configuration.instance.textAreaLogger.info("jar could not be verified - not loading corrupted jar");
+            return null;
+        }
         try {
-            var port = Loader.getPort(System.getProperty("user.dir") + "/resources/"+ jarName +".jar", className);
-            var method = port.getClass().getDeclaredMethod("decrypt", BigInteger.class, BigInteger.class, String.class);
+            var port = Loader.getPort(Configuration.instance.jarPath + jarName +".jar", className);
+            var method = port.getClass().getDeclaredMethod("decrypt", String.class, File.class);
             return method.invoke(port, message, keyfileFile).toString();
+        } catch (IOException e) {
+            Configuration.instance.textAreaLogger.info("Invalid Keyfile Provided");
+            return null;
         } catch (Exception e){
             e.printStackTrace();
             return null;

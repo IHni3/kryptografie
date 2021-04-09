@@ -33,7 +33,7 @@ public enum DBService implements IDBService {
             db.createTableChannel();
             db.createTableMessages();
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printCritical(exception.toString());
+            Configuration.instance.textAreaLogger.info(exception.toString());
         }
 
     }
@@ -61,7 +61,7 @@ public enum DBService implements IDBService {
         try {
             db.update(String.format("INSERT INTO types (name) VALUES ('%s')",type));
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printWarning(exception.toString());
+            Configuration.instance.textAreaLogger.info(exception.toString());
         }
     }
 
@@ -72,7 +72,7 @@ public enum DBService implements IDBService {
         try {
             db.update(String.format("INSERT INTO algorithms (name) VALUES ('%s')",algorithm));
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printWarning(exception.toString());
+            Configuration.instance.textAreaLogger.info(exception.toString());
         }
     }
 
@@ -97,7 +97,7 @@ public enum DBService implements IDBService {
                     timeStamp)
             );
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printWarning(exception.toString());
+            Configuration.instance.textAreaLogger.info(exception.toString());
         }
     }
 
@@ -120,7 +120,7 @@ public enum DBService implements IDBService {
             db.update(String.format("INSERT INTO participants (name,type_id) VALUES ('%s', %d)", name, typeID));
             db.createTablePostbox(name);
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printWarning(exception.toString());
+            Configuration.instance.textAreaLogger.info(exception.toString());
         }
     }
 
@@ -143,7 +143,7 @@ public enum DBService implements IDBService {
                     participantA_ID,
                     participantB_ID));
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printWarning(exception.toString());
+            Configuration.instance.textAreaLogger.info(exception.toString());
         }
     }
 
@@ -157,7 +157,7 @@ public enum DBService implements IDBService {
     @Override
     public void insertPostboxMessage(String participantSender, String participantReceiver, String message) {
         if (!participantExists(participantSender) || !participantExists(participantReceiver)) {
-            Configuration.instance.getLogger().printWarning("Could not save postbox message, participant not found.");
+            Configuration.instance.textAreaLogger.info("Could not save postbox message, participant not found.");
             return;
         }
 
@@ -172,7 +172,7 @@ public enum DBService implements IDBService {
                     message,
                     timeStamp));
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printWarning(exception.toString());
+            Configuration.instance.textAreaLogger.info(exception.toString());
         }
     }
 
@@ -190,7 +190,7 @@ public enum DBService implements IDBService {
         try {
             affected = db.update(sql);
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printWarning(exception.toString());
+            Configuration.instance.textAreaLogger.info(exception.toString());
             return false;
         }
         return affected != 0;
@@ -208,7 +208,7 @@ public enum DBService implements IDBService {
             }
 
         } catch (SQLException sqlException) {
-            Configuration.instance.getLogger().printError(sqlException.getMessage());
+            Configuration.instance.textAreaLogger.info(sqlException.getMessage());
         }
         return algorithms;
     }
@@ -224,7 +224,7 @@ public enum DBService implements IDBService {
             }
 
         } catch (SQLException sqlException) {
-            Configuration.instance.getLogger().printError(sqlException.getMessage());
+            Configuration.instance.textAreaLogger.info(sqlException.getMessage());
         }
         return types;
     }
@@ -243,7 +243,7 @@ public enum DBService implements IDBService {
             }
 
         } catch (SQLException sqlException) {
-            Configuration.instance.getLogger().printError(sqlException.getMessage());
+            Configuration.instance.textAreaLogger.info(sqlException.getMessage());
         }
         return participants;
     }
@@ -262,7 +262,7 @@ public enum DBService implements IDBService {
                 channelList.add(new Channel(resultSet.getString("name"), participantA, participantB));
             }
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printError(exception.getMessage());
+            Configuration.instance.textAreaLogger.info(exception.getMessage());
         }
 
         return channelList;
@@ -272,7 +272,7 @@ public enum DBService implements IDBService {
     public List<PostboxMessage> getPostboxMessages(String participant) {
         List<PostboxMessage> msgList = new ArrayList<>();
         if (!participantExists(participant)) {
-            Configuration.instance.getLogger().printWarning("Couldn't get postbox message, participant wasn't found.");
+            Configuration.instance.textAreaLogger.info("Couldn't get postbox message, participant wasn't found.");
         }
 
         try {
@@ -288,7 +288,7 @@ public enum DBService implements IDBService {
                 msgList.add(pbM);
             }
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printError(exception.getMessage());
+            Configuration.instance.textAreaLogger.info(exception.getMessage());
         }
 
         return msgList;
@@ -310,7 +310,7 @@ public enum DBService implements IDBService {
             channelName = resultSet.getString("name");
             return new Channel(channelName, getOneParticipant(participantA), getOneParticipant(participantB));
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printError(exception.getMessage());
+            Configuration.instance.textAreaLogger.info(exception.getMessage());
         }
 
 
@@ -330,7 +330,7 @@ public enum DBService implements IDBService {
             part2Id = resultSet.getInt("participant_02");
             return new Channel(channelName, getParticipant(part1Id), getParticipant(part2Id));
         } catch (SQLException sqlException) {
-            Configuration.instance.getLogger().printError(sqlException.getMessage());
+            Configuration.instance.textAreaLogger.info(sqlException.getMessage());
         }
         return null;
     }
@@ -352,7 +352,7 @@ public enum DBService implements IDBService {
             return getTypeName(typeID);
 
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printError(exception.getMessage());
+            Configuration.instance.textAreaLogger.info(exception.getMessage());
         }
 
         return "";
@@ -376,7 +376,7 @@ public enum DBService implements IDBService {
             }
             return true;
         } catch (SQLException sqlException) {
-            Configuration.instance.getLogger().printError(sqlException.getMessage());
+            Configuration.instance.textAreaLogger.info(sqlException.getMessage());
         }
 
         return false;
@@ -398,7 +398,7 @@ public enum DBService implements IDBService {
             }
             return resultSet.getInt("ID");
         } catch (SQLException sqlException) {
-            Configuration.instance.getLogger().printWarning(sqlException.getMessage());
+            Configuration.instance.textAreaLogger.info(sqlException.getMessage());
         }
 
         return -1;
@@ -412,7 +412,7 @@ public enum DBService implements IDBService {
             }
             return resultSet.getInt("ID");
         } catch (SQLException sqlException) {
-            Configuration.instance.getLogger().printError(sqlException.getMessage());
+            Configuration.instance.textAreaLogger.info(sqlException.getMessage());
         }
         return -1;
     }
@@ -425,7 +425,7 @@ public enum DBService implements IDBService {
             }
             return resultSet.getString("name");
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printError(exception.getMessage());
+            Configuration.instance.textAreaLogger.info(exception.getMessage());
         }
 
         return "";
@@ -439,7 +439,7 @@ public enum DBService implements IDBService {
             }
             return resultSet.getString("name");
         } catch (SQLException exception) {
-            Configuration.instance.getLogger().printError(exception.getMessage());
+            Configuration.instance.textAreaLogger.info(exception.getMessage());
         }
 
         return "";
@@ -453,7 +453,7 @@ public enum DBService implements IDBService {
             }
             return resultSet.getInt("ID");
         } catch (SQLException sqlException) {
-            Configuration.instance.getLogger().printError(sqlException.getMessage());
+            Configuration.instance.textAreaLogger.info(sqlException.getMessage());
         }
 
         return -1;

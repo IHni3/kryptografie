@@ -1,119 +1,82 @@
-import logging.Logger;
-import logging.LoggingUtils;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import com.google.gson.Gson;
 
-import java.io.*;
-
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.util.logging.Logger;
 
 public class Shift {
-    // static instance
-    private static final Shift instance = new Shift();
-
-    //logger
-    private Logger logger = new Logger();
-
-    // port
+    private static Shift instance = new Shift();
     public Port port;
 
-    int key;
-    String plainMessage;
-    String encryptedMessage;
-
-    // private constructor
-    private Shift() {
+    public Shift(){
         port = new Port();
     }
 
-    // static method getInstance
+    public String encryptRSA(String plain, int key, Logger logger){
+        CaesarCipher cipher = new CaesarCipher(key);
+        return cipher.encrypt(plain, logger);
+    }
+
+    public String decryptRSA(String encrypted, int key, Logger logger){
+        CaesarCipher cipher = new CaesarCipher(key);
+        return cipher.decrypt(encrypted, logger);
+    }
+
     public static Shift getInstance() {
         return instance;
     }
 
-    // inner methods
-    public String innerVersion() {
-        return "Shift";
-    }
-
-
-    //Encrypt Message with Key from JSON File
-    private String innerEncrypt(String plainMessage, File keyfile){
-        LoggingUtils.prepareLogger(logger,"encrypt", "shiftbase");
-        logger.printInfo("It works!!");
-
-        this.key = readJsonFile(keyfile);
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for(int i = 0; i< plainMessage.length(); i++){
-            char character = (char) (plainMessage.codePointAt(i) + key);
-            stringBuilder.append(character);
-        }
-
-        return stringBuilder.toString();
-    }
-
-    //Decrypt Message with Key from JSON File
-    private String innerDecrypt(String encryptedMessage, File keyfile){
-        LoggingUtils.prepareLogger(logger,"decrypt", "shiftbase");
-        logger.printInfo("It works!!");
-
-        this.key = readJsonFile(keyfile);
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (int i = 0; i < encryptedMessage.length(); i++) {
-            char character = (char) (encryptedMessage.codePointAt(i) - key);
-            stringBuilder.append(character);
-        }
-
-        return stringBuilder.toString();
-    }
-
-
-    //Read JSON File into Integer Key
-    private int readJsonFile(File keyfile){
-        int key;
-        try {
-            FileReader reader = new FileReader(keyfile);
-            JSONParser jsonParser = new JSONParser();
-
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
-            key = Integer.parseInt(jsonObject.get("key").toString());
-
-        } catch(Exception ex){
-            throw new RuntimeException(ex);
-        }
-
-        return key;
-    }
-
-    private void innerEnabledDebuggingMode() {
-        logger.enable();
-    }
-
-
-
-    // inner class port
-    public class Port implements IShift {
-        @Override
+    public class Port {
         public String version() {
-            return innerVersion();
+            return null;
         }
 
-        @Override
-        public String decrypt(String plainMessage, File keyfile) {
-            return innerDecrypt(plainMessage, keyfile);
+        public String encrypt(File keyfile, String plain, Logger logger) throws IOException {
+
+            var parsed = parseKeyfile(keyfile, logger);
+
+            logger.info("Parsed keyfile key: " + parsed.key);
+
+            logger.info("Encrypting message \"" + plain + "\"");
+            return encryptRSA(plain, parsed.key, logger);
         }
 
-        @Override
-        public String encrypt(String encryptedMessage, File keyfile) {
-            return innerEncrypt(encryptedMessage, keyfile);
+        public String decrypt(File keyfile, String cipher, Logger logger) throws IOException {
+            var parsed = parseKeyfile(keyfile, logger);
+
+            logger.info("Parsed keyfile key: " + parsed.key);
+
+            logger.info("Decrypting message \"" + cipher + "\"");
+            return decryptRSA(cipher, parsed.key, logger);
         }
 
-        @Override
-        public void enableDebuggingMode() {
-            innerEnabledDebuggingMode();
+        private Keyfile parseKeyfile(File keyfile, Logger logger) throws IOException {
+            Gson gson = new Gson();
+            Reader reader = null;
+            try {
+                logger.info("Loading keyfile");
+                reader = Files.newBufferedReader(keyfile.toPath());
+            } catch (Exception e) { }
+            logger.info("Parsing keyfile" + keyfile);
+            Keyfile parsed = gson.fromJson(reader, Keyfile.class);
+            if (parsed == null) {
+                throw new IOException();
+            }
+            return parsed;
         }
     }
+
+    public class Keyfile{
+        int key;
+
+        public Keyfile(){}
+
+        public Keyfile(int key){
+            this.key = key;
+        }
+
+    }
+
 }

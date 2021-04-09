@@ -1,6 +1,12 @@
+import com.google.gson.Gson;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Reader;
 import java.math.BigInteger;
+import java.nio.file.Files;
+import java.security.Key;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,59 +28,47 @@ public class RsaCracker {
         return instance;
     }
 
-    public class Port implements IRsaCracker {
-        @Override
+    public class Port {
         public String version() {
             return null;
         }
 
-        public String decrypt(String encryptedMessage, File publicKeyfile) throws FileNotFoundException {
+        public String decrypt(String encryptedMessage, File publicKeyfile) throws IOException {
             return decryptMessage(encryptedMessage, publicKeyfile);
         }
     }
 
-    private String decryptMessage(String encryptedMessage, File publicKeyfile) throws FileNotFoundException {
-        readKeyFile(publicKeyfile);
+    private String decryptMessage(String encryptedMessage, File publicKeyfile) throws IOException {
+        loadKeyFile(publicKeyfile);
+
+
 
         byte[] bytes = Base64.getDecoder().decode(encryptedMessage);
 
         try {
             BigInteger plain = execute(new BigInteger(bytes));
             if (plain == null)
-                return "";
+                return null;
             byte[] plainBytes = plain.toByteArray();
             return new String(plainBytes);
-        } catch (RsaCrackingException rsae) {
-            System.out.println(rsae.getMessage());
+        } catch (RsaCrackingException e) {
+            System.out.println(e.getMessage());
         }
         return null;
     }
 
-    private void readKeyFile(File keyfile) throws FileNotFoundException {
-        /*
-        Example:
-        {
-          "n": 7448411,
-          "e": 7442947,
-          "d": 4465771
-        }
-         */
-        Scanner scanner = new Scanner(keyfile);
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            if (line.contains("\"n\":")) {
-                n = getParam(line);
-            } else if (line.contains("\"e\":")) {
-                e = getParam(line);
-            }
-        }
-    }
+    private void loadKeyFile(File keyfile) throws IOException {
+        Gson gson = new Gson();
+        Reader reader = null;
 
-    private BigInteger getParam(String input) {
-        String[] lineParts = input.split(":");
-        String line = lineParts[1];
-        line = line.replace(",", "").trim();
-        return new BigInteger(line);
+        reader = Files.newBufferedReader(keyfile.toPath());
+
+        Keyfile parsed = gson.fromJson(reader, Keyfile.class);
+
+        if (parsed == null) throw new IOException();
+
+        e = parsed.e;
+        n = parsed.n;
     }
 
     private BigInteger execute(BigInteger cipher) throws RsaCrackingException {
@@ -126,5 +120,20 @@ public class RsaCracker {
         }
 
         return factorList;
+    }
+
+    public class Keyfile{
+        BigInteger e;
+        BigInteger d;
+        BigInteger n;
+
+        public Keyfile(){}
+
+        public Keyfile(BigInteger e, BigInteger d, BigInteger n){
+            this.e = e;
+            this.d = d;
+            this.n = n;
+        }
+
     }
 }

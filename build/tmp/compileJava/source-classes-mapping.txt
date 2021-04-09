@@ -1,36 +1,37 @@
 configuration/AlgorithmType.java
  configuration.AlgorithmType
+commands/CrackRSATask.java
+ commands.CrackRSATask
 configuration/ExecutionType.java
  configuration.ExecutionType
 models/Postbox.java
  models.Postbox
 configuration/Configuration.java
  configuration.Configuration
-gui/GUI.java
- gui.GUI
- gui.GUI$1
+parser/CompactParser.java
+ parser.CompactParser
+configuration/LoggingHandler.java
+ configuration.LoggingHandler
 models/PostboxMessage.java
  models.PostboxMessage
 models/BusMessage.java
  models.BusMessage
-logging/LogLevel.java
- logging.LogLevel
-filesystem/FileSystemUtils.java
- filesystem.FileSystemUtils
+database/SQLException.java
+ database.SQLException
 models/Participant.java
  models.Participant
-gui/Controller.java
- gui.Controller
+database/HSQLDB.java
+ database.HSQLDB
 configuration/ParticipantType.java
  configuration.ParticipantType
 database/IDBService.java
  database.IDBService
 models/Channel.java
  models.Channel
-parser/CompactParser.java
- parser.CompactParser
-logging/LoggingUtils.java
- logging.LoggingUtils
+database/DBService.java
+ database.DBService
+commands/CrackShiftTask.java
+ commands.CrackShiftTask
 models/ParticipantType/Participant.java
  models.ParticipantType.Participant
 models/ParticipantType/IParticipantType.java
@@ -39,25 +40,20 @@ models/Message.java
  models.Message
 commands/CommandUtils.java
  commands.CommandUtils
-logging/Logger.java
- logging.Logger
+commands/JarVerifier.java
+ commands.JarVerifier
 models/ParticipantType/Intruder.java
  models.ParticipantType.Intruder
 gui/TextAreaHandler.java
  gui.TextAreaHandler
-commands/CommandExecutionException.java
- commands.CommandExecutionException
 commands/Loader.java
  commands.Loader
 database/DBConfiguration.java
  database.DBConfiguration
-database/HSQLDB.java
- database.HSQLDB
+gui/GUI.java
+ gui.GUI
+ gui.GUI$1
+ gui.GUI$2
+ gui.GUI$3
 Application.java
  Application
-database/SQLException.java
- database.SQLException
-database/DBService.java
- database.DBService
-gui/Launcher.java
- gui.Launcher

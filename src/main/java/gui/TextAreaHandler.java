@@ -15,7 +15,7 @@ public class TextAreaHandler extends java.util.logging.Handler {
 
     @Override
     public void publish(LogRecord record) {
-        Platform.runLater(() -> textArea.appendText(record.getMessage()));
+        Platform.runLater(() -> {textArea.appendText(record.getMessage()); textArea.appendText("\n");});
     }
 
     @Override

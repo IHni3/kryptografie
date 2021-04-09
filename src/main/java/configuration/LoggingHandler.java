@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 public class LoggingHandler {
     Handler handler;
     Logger logger;
-    Boolean enabled;
+    Boolean enabled = false;
 
     public LoggingHandler(){
         logger = java.util.logging.Logger.getLogger("file");
@@ -33,8 +33,10 @@ public class LoggingHandler {
             if (handler != null){
                 logger.removeHandler(handler);
             }
+            Configuration.instance.textAreaLogger.info("Logging disabled");
         } else {
             enabled = true;
+            Configuration.instance.textAreaLogger.info("Logging enabled");
         }
     }
 

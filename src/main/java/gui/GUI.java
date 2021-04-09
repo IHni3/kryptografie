@@ -52,8 +52,8 @@ public class GUI extends Application {
 
         executeButton.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
-                System.out.println(commandLineArea.getText());
                 execute(commandLineArea.getText());
+                commandLineArea.clear();
             }
         });
 
@@ -81,9 +81,10 @@ public class GUI extends Application {
                 if(keyEvent.getCode() == KeyCode.F3){
                     Configuration.instance.loggingHandler.switchLogging();
                 } else if(keyEvent.getCode() == KeyCode.F8) {
-                    System.out.println("Load Logfile Key");
+                    loadLogfile(outputArea);
                 } else if(keyEvent.getCode().equals(KeyCode.F5)){
                     execute(commandLineArea.getText());
+                    commandLineArea.clear();
                 }
             }
         });
@@ -111,15 +112,16 @@ public class GUI extends Application {
             br.close();
 
         } catch (FileNotFoundException e) {
-            Configuration.instance.textAreaLogger.info("problems occurred while loading log file");
+            Configuration.instance.textAreaLogger.info("no logfile present");
             return;
-        } catch (IOException e) {
+        } catch (Exception e) {
             Configuration.instance.textAreaLogger.info("problems occurred while loading log file");
             return;
         }
 
         for (String line : lines){
             logArea.appendText(line);
+            logArea.appendText("\n");
         }
 
     }

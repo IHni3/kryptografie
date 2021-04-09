@@ -64,13 +64,11 @@ public class ShiftCracker {
 
 
     // inner class port
-    public class Port implements IShiftCracker {
-        @Override
+    public class Port {
         public String version() {
             return innerVersion();
         }
 
-        @Override
         public String decrypt(String encryptedMessage) {
             return innerDecrypt(encryptedMessage);
         }

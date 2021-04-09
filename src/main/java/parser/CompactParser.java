@@ -31,7 +31,7 @@ public class CompactParser {
             if (extracted != null) break;
         }
         if (extracted == null) {
-            Configuration.instance.textAreaLogger.info("Command could not be processed");
+            Configuration.instance.textAreaLogger.info(String.format("Command \"%s\" could not be processed", command));
             return;
         }
 
