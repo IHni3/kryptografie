@@ -13,8 +13,8 @@ import models.ParticipantIntruderFactory;
 
 public class RegisterParticipantCommand implements ICommand{
 
-    private String name;
-    private ParticipantType type;
+    private final String name;
+    private final ParticipantType type;
 
     public RegisterParticipantCommand(String name, ParticipantType type) {
         this.name = name;

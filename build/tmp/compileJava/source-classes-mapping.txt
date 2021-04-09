@@ -8,19 +8,18 @@ commands/CommandExecutionException.java
  commands.CommandExecutionException
 commands/CommandUtils.java
  commands.CommandUtils
-models/BusMessage.java
- models.BusMessage
+parser/IParser.java
+ parser.IParser
 filesystem/FileSystemUtils.java
  filesystem.FileSystemUtils
-commands/RegisterParticipantCommand.java
- commands.RegisterParticipantCommand
+parser/IntrudeChannelParser.java
+ parser.IntrudeChannelParser
 database/HSQLDB.java
  database.HSQLDB
 configuration/ParticipantType.java
  configuration.ParticipantType
-gui/Controller.java
- gui.Controller
- gui.Controller$1
+parser/ParserUtils.java
+ parser.ParserUtils
 commands/ICommand.java
  commands.ICommand
 logging/LoggingUtils.java
@@ -32,25 +31,24 @@ commands/CrackMessageCommand.java
  commands.CrackMessageCommand$Task
 parser/DropChannelParser.java
  parser.DropChannelParser
-models/Message.java
- models.Message
+parser/DecryptParser.java
+ parser.DecryptParser
 logging/Logger.java
  logging.Logger
 parser/Parser.java
  parser.Parser
 parser/ParserException.java
  parser.ParserException
-gui/GUI.java
- gui.GUI
- gui.GUI$1
+parser/CreateChannelParser.java
+ parser.CreateChannelParser
 parser/ShowChannelParser.java
  parser.ShowChannelParser
 commands/DecryptMessageCommand.java
  commands.DecryptMessageCommand
  commands.DecryptMessageCommand$1
  commands.DecryptMessageCommand$UnsupportedAlgorithmException
-models/Intruder.java
- models.Intruder
+parser/EncryptParser.java
+ parser.EncryptParser
 components/ComponentUtils.java
  components.ComponentUtils
 database/DBConfiguration.java
@@ -59,8 +57,8 @@ configuration/AlgorithmType.java
  configuration.AlgorithmType
 configuration/ExecutionType.java
  configuration.ExecutionType
-models/PostboxMessage.java
- models.PostboxMessage
+commands/CrackMessageRsaCommand.java
+ commands.CrackMessageRsaCommand
 parser/CrackRsaParser.java
  parser.CrackRsaParser
 logging/LogLevel.java
@@ -69,43 +67,45 @@ commands/EncryptMessageCommand.java
  commands.EncryptMessageCommand
  commands.EncryptMessageCommand$1
  commands.EncryptMessageCommand$UnsupportedAlgorithmException
-models/Participant.java
- models.Participant
-parser/IParser.java
- parser.IParser
-parser/EncryptParser.java
- parser.EncryptParser
-commands/CrackMessageRsaCommand.java
- commands.CrackMessageRsaCommand
-parser/DecryptParser.java
- parser.DecryptParser
-parser/CreateChannelParser.java
- parser.CreateChannelParser
-parser/IntrudeChannelParser.java
- parser.IntrudeChannelParser
-parser/ParserUtils.java
- parser.ParserUtils
-models/ParticipantIntruderFactory.java
- models.ParticipantIntruderFactory
 parser/CrackShiftParser.java
  parser.CrackShiftParser
-parser/RegisterParticipantParser.java
- parser.RegisterParticipantParser
 models/Channel.java
  models.Channel
 database/DBService.java
  database.DBService
-commands/DropChannelCommand.java
- commands.DropChannelCommand
-commands/CreateChannelCommand.java
- commands.CreateChannelCommand
 commands/ShowChannelCommand.java
  commands.ShowChannelCommand
+commands/SendMessageCommand.java
+ commands.SendMessageCommand
+models/PostboxMessage.java
+ models.PostboxMessage
+models/ParticipantIntruderFactory.java
+ models.ParticipantIntruderFactory
+parser/RegisterParticipantParser.java
+ parser.RegisterParticipantParser
+models/Message.java
+ models.Message
+models/BusMessage.java
+ models.BusMessage
+commands/RegisterParticipantCommand.java
+ commands.RegisterParticipantCommand
+models/Participant.java
+ models.Participant
+commands/DropChannelCommand.java
+ commands.DropChannelCommand
+gui/Controller.java
+ gui.Controller
+ gui.Controller$1
+commands/CreateChannelCommand.java
+ commands.CreateChannelCommand
+gui/GUI.java
+ gui.GUI
+ gui.GUI$1
 database/IDBService.java
  database.IDBService
 Application.java
  Application
-commands/SendMessageCommand.java
- commands.SendMessageCommand
+models/Intruder.java
+ models.Intruder
 commands/IntrudeChannelCommand.java
  commands.IntrudeChannelCommand

@@ -25,9 +25,9 @@ import java.nio.file.Files;
 
 public class Controller {
 
-    private GUI gui;
-    private Configuration configuration = Configuration.instance;
-    private IParser parser;
+    private final GUI gui;
+    private final Configuration configuration = Configuration.instance;
+    private final IParser parser;
 
     public Controller(GUI gui) {
         this.gui = gui;
@@ -59,12 +59,12 @@ public class Controller {
 
     public void disableDebugging(){
         Configuration.instance.getGUILogger().printInfo("Logging turned: off");
-        configuration.instance.debugModeEnabled = false;
+        Configuration.instance.debugModeEnabled = false;
     }
 
     public void enableDebugging(){
         Configuration.instance.getGUILogger().printInfo("Logging turned: on");
-        configuration.instance.debugModeEnabled = true;
+        Configuration.instance.debugModeEnabled = true;
     }
 
     public void executeCommand(String inputString){

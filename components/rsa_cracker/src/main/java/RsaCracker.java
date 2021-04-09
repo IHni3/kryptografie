@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class RsaCracker {
-    private static RsaCracker instance = new RsaCracker();
+    private static final RsaCracker instance = new RsaCracker();
 
     private BigInteger e = BigInteger.ZERO;
     private BigInteger n = BigInteger.ZERO;

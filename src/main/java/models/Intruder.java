@@ -21,8 +21,6 @@ public class Intruder extends Participant {
 
     @Override
     public void receiveMessage(BusMessage message) {
-
-
         ICommand cracker;
 
         if (message.getAlgorithm() == AlgorithmType.RSA)

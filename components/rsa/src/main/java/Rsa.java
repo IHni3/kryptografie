@@ -1,115 +1,91 @@
+import java.io.File;
+import java.io.Reader;
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.util.Base64;
+import com.google.gson.Gson;
 import logging.Logger;
 import logging.LoggingUtils;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.math.BigInteger;
-import java.nio.charset.Charset;
-import java.util.Base64;
-import java.util.Scanner;
 
 public class Rsa {
     private static Rsa instance = new Rsa();
     public Port port;
-    private Key key;
 
     //logger
-    private Logger logger = new Logger();
+    private final Logger logger = new Logger();
 
-    private Rsa() {
+    public Rsa(){
         port = new Port();
+    }
+
+    public String encryptRSA(String plain, Key key){
+        Cipher cipher = new Cipher();
+        byte[] encryptedMessage = cipher.encrypt(plain, key);
+        return Base64.getEncoder().encodeToString(encryptedMessage);
+    }
+
+    public String decryptRSA(String encrypted, Key key){
+        Cipher cipher = new Cipher();
+        byte[] encryptedMessage = Base64.getDecoder().decode(encrypted);
+        return cipher.decrypt(encryptedMessage, key);
     }
 
     public static Rsa getInstance() {
         return instance;
     }
 
-    private String encryptMessage(String plainMessage, File publicKeyfile) throws FileNotFoundException {
-        LoggingUtils.prepareLogger(logger,"encrypt", "rsa");
-        logger.printInfo("It works!!");
-
-        readPublicKeyFile(publicKeyfile);
-
-        byte[] bytes = plainMessage.getBytes(Charset.defaultCharset());
-        byte[] encrypted = crypt(new BigInteger(bytes), key).toByteArray();
-        return Base64.getEncoder().encodeToString(encrypted);
-    }
-
-    private String decryptMessage(String encryptedMessage, File privateKeyfile) throws FileNotFoundException {
-        LoggingUtils.prepareLogger(logger,"decrypt", "rsa");
-        logger.printInfo("It works!!");
-
-
-        readPrivateKeyFile(privateKeyfile);
-
-        byte[] cipher = Base64.getDecoder().decode(encryptedMessage);
-        byte[] msg = crypt(new BigInteger(cipher), key).toByteArray();
-        return new String(msg);
-    }
-
-    private BigInteger crypt(BigInteger message, Key key) {
-        return message.modPow(key.getE(), key.getN());
-    }
-
-    private void readPrivateKeyFile(File keyfile) throws FileNotFoundException {
-        readKeyFromFile(keyfile, "d");
-    }
-
-    private void readPublicKeyFile(File keyfile) throws FileNotFoundException {
-        readKeyFromFile(keyfile);
-    }
-
-    private void readKeyFromFile(File keyfile) throws FileNotFoundException {
-        readKeyFromFile(keyfile, "e");
-    }
-
-    private void readKeyFromFile(File keyfile, String eReplacement) throws FileNotFoundException {
-        BigInteger n = null;
-        BigInteger e = null;
-
-        Scanner scanner = new Scanner(keyfile);
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            if (line.contains("\"n\":")) {
-                n = getParameter(line);
-            } else if (line.contains("\"" + eReplacement + "\":")) {
-                e = getParameter(line);
-            }
-        }
-
-        this.key = new Key(n, e);
-    }
-
-    private BigInteger getParameter(String input) {
-        String[] lineParts = input.split(":");
-        String line = lineParts[1];
-        line = line.replace(",", "").trim();
-        return new BigInteger(line);
-    }
-
-    private void innerEnabledDebuggingMode() {
-        logger.enable();
-    }
-
-    public class Port implements IRsa {
-        @Override
+    public class Port {
         public String version() {
             return null;
         }
 
-        @Override
-        public String encrypt(String plainMessage, File publicKeyfile) throws FileNotFoundException {
-            return encryptMessage(plainMessage, publicKeyfile);
+        public String encrypt(File keyfile, String plain) {
+
+            LoggingUtils.prepareLogger(logger,"decrypt", "rsa");
+            logger.printInfo("It works!!");
+
+            Gson gson = new Gson();
+            Reader reader = null;
+            try {
+                reader = Files.newBufferedReader(keyfile.toPath());
+            } catch (Exception e) { }
+            Keyfile parsed = gson.fromJson(reader, Keyfile.class);
+
+            Key key = new Key(parsed.n, parsed.e);
+
+            return encryptRSA(plain, key);
         }
 
-        @Override
-        public String decrypt(String encryptedMessage, File privateKeyfile) throws FileNotFoundException {
-            return decryptMessage(encryptedMessage, privateKeyfile);
+        public String decrypt(File keyfile, String cipher) {
+            Gson gson = new Gson();
+            Reader reader = null;
+            try {
+                reader = Files.newBufferedReader(keyfile.toPath());
+            } catch (Exception e) { }
+            Keyfile parsed = gson.fromJson(reader, Keyfile.class);
+
+            Key key = new Key(parsed.n, parsed.d);
+
+            return decryptRSA(cipher, key);
         }
 
-        @Override
         public void enableDebuggingMode() {
-            innerEnabledDebuggingMode();
+            logger.enable();
         }
+    }
+
+    public class Keyfile{
+        BigInteger e;
+        BigInteger d;
+        BigInteger n;
+
+        public Keyfile(){}
+
+        public Keyfile(BigInteger e, BigInteger d, BigInteger n){
+            this.e = e;
+            this.d = d;
+            this.n = n;
+        }
+
     }
 }
