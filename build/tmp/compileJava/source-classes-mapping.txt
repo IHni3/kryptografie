@@ -1,111 +1,113 @@
 models/Postbox.java
  models.Postbox
-commands/CrackMessageShiftCommand.java
- commands.CrackMessageShiftCommand
-configuration/Configuration.java
- configuration.Configuration
-commands/CommandExecutionException.java
- commands.CommandExecutionException
-commands/CommandUtils.java
- commands.CommandUtils
-parser/IParser.java
- parser.IParser
+Application.java
+ Application
+parser/ShowChannelParser.java
+ parser.ShowChannelParser
+commands/ShowChannelCommand.java
+ commands.ShowChannelCommand
+commands/RegisterParticipantCommand.java
+ commands.RegisterParticipantCommand
+models/BusMessage.java
+ models.BusMessage
 filesystem/FileSystemUtils.java
  filesystem.FileSystemUtils
-parser/IntrudeChannelParser.java
- parser.IntrudeChannelParser
-database/HSQLDB.java
- database.HSQLDB
+commands/CommandExecutionException.java
+ commands.CommandExecutionException
+commands/SendMessageCommand.java
+ commands.SendMessageCommand
 configuration/ParticipantType.java
  configuration.ParticipantType
-parser/ParserUtils.java
- parser.ParserUtils
+commands/CommandUtils.java
+ commands.CommandUtils
 commands/ICommand.java
  commands.ICommand
 logging/LoggingUtils.java
  logging.LoggingUtils
 parser/SendMessageParser.java
  parser.SendMessageParser
+models/ParticipantIntruderFactory.java
+ models.ParticipantIntruderFactory
+parser/DropChannelParser.java
+ parser.DropChannelParser
+models/Message.java
+ models.Message
+logging/Logger.java
+ logging.Logger
+commands/DropChannelCommand.java
+ commands.DropChannelCommand
+parser/ParserException.java
+ parser.ParserException
+gui/GUI.java
+ gui.GUI
+ gui.GUI$1
+parser/RegisterParticipantParser.java
+ parser.RegisterParticipantParser
+parser/CrackShiftParser.java
+ parser.CrackShiftParser
+database/IDBService.java
+ database.IDBService
 commands/CrackMessageCommand.java
  commands.CrackMessageCommand
  commands.CrackMessageCommand$Task
-parser/DropChannelParser.java
- parser.DropChannelParser
-parser/DecryptParser.java
- parser.DecryptParser
-logging/Logger.java
- logging.Logger
-parser/Parser.java
- parser.Parser
-parser/ParserException.java
- parser.ParserException
-parser/CreateChannelParser.java
- parser.CreateChannelParser
-parser/ShowChannelParser.java
- parser.ShowChannelParser
-commands/DecryptMessageCommand.java
- commands.DecryptMessageCommand
- commands.DecryptMessageCommand$1
- commands.DecryptMessageCommand$UnsupportedAlgorithmException
-parser/EncryptParser.java
- parser.EncryptParser
-components/ComponentUtils.java
- components.ComponentUtils
-database/DBConfiguration.java
- database.DBConfiguration
+parser/IntrudeChannelParser.java
+ parser.IntrudeChannelParser
 configuration/AlgorithmType.java
  configuration.AlgorithmType
 configuration/ExecutionType.java
  configuration.ExecutionType
-commands/CrackMessageRsaCommand.java
- commands.CrackMessageRsaCommand
-parser/CrackRsaParser.java
- parser.CrackRsaParser
+models/PostboxMessage.java
+ models.PostboxMessage
+components/ComponentUtils.java
+ components.ComponentUtils
 logging/LogLevel.java
  logging.LogLevel
-commands/EncryptMessageCommand.java
- commands.EncryptMessageCommand
- commands.EncryptMessageCommand$1
- commands.EncryptMessageCommand$UnsupportedAlgorithmException
-parser/CrackShiftParser.java
- parser.CrackShiftParser
+commands/CreateChannelCommand.java
+ commands.CreateChannelCommand
+parser/IParser.java
+ parser.IParser
+parser/CreateChannelParser.java
+ parser.CreateChannelParser
+parser/DecryptParser.java
+ parser.DecryptParser
+commands/IntrudeChannelCommand.java
+ commands.IntrudeChannelCommand
+parser/ParserUtils.java
+ parser.ParserUtils
+database/DBConfiguration.java
+ database.DBConfiguration
+parser/EncryptParser.java
+ parser.EncryptParser
 models/Channel.java
  models.Channel
 database/DBService.java
  database.DBService
-commands/ShowChannelCommand.java
- commands.ShowChannelCommand
-commands/SendMessageCommand.java
- commands.SendMessageCommand
-models/PostboxMessage.java
- models.PostboxMessage
-models/ParticipantIntruderFactory.java
- models.ParticipantIntruderFactory
-parser/RegisterParticipantParser.java
- parser.RegisterParticipantParser
-models/Message.java
- models.Message
-models/BusMessage.java
- models.BusMessage
-commands/RegisterParticipantCommand.java
- commands.RegisterParticipantCommand
+commands/CrackMessageShiftCommand.java
+ commands.CrackMessageShiftCommand
+configuration/Configuration.java
+ configuration.Configuration
+components/JarVerifier.java
+ components.JarVerifier
+commands/EncryptMessageCommand.java
+ commands.EncryptMessageCommand
+ commands.EncryptMessageCommand$1
+ commands.EncryptMessageCommand$UnsupportedAlgorithmException
+parser/Parser.java
+ parser.Parser
 models/Participant.java
  models.Participant
-commands/DropChannelCommand.java
- commands.DropChannelCommand
+commands/DecryptMessageCommand.java
+ commands.DecryptMessageCommand
+ commands.DecryptMessageCommand$1
+ commands.DecryptMessageCommand$UnsupportedAlgorithmException
+database/HSQLDB.java
+ database.HSQLDB
 gui/Controller.java
  gui.Controller
  gui.Controller$1
-commands/CreateChannelCommand.java
- commands.CreateChannelCommand
-gui/GUI.java
- gui.GUI
- gui.GUI$1
-database/IDBService.java
- database.IDBService
-Application.java
- Application
 models/Intruder.java
  models.Intruder
-commands/IntrudeChannelCommand.java
- commands.IntrudeChannelCommand
+commands/CrackMessageRsaCommand.java
+ commands.CrackMessageRsaCommand
+parser/CrackRsaParser.java
+ parser.CrackRsaParser

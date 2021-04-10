@@ -7,6 +7,7 @@
 package commands;
 
 import components.ComponentUtils;
+import components.JarVerifier;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -27,6 +28,10 @@ public abstract class CrackMessageCommand implements ICommand{
 
     @Override
     public String execute() throws CommandExecutionException {
+
+        if(!JarVerifier.verify(getJarPath()))
+            throw new CommandExecutionException("jar verification failed!");
+
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<String> future = executor.submit(new Task());
         String decryptedMessage = "";

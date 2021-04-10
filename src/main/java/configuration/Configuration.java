@@ -39,6 +39,7 @@ public enum Configuration {
             "cracker" + fileSeparator + "build"
             + fileSeparator + "libs" + fileSeparator + "rsa_cracker.jar";
 
+    public final String jdkPath = "C:\\Program Files\\Java\\jdk-15\\bin\\";
 
 
     // Database

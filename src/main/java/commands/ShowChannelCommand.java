@@ -16,7 +16,7 @@ public class ShowChannelCommand implements ICommand{
         StringBuilder returnString = new StringBuilder();
 
         for (var channel : channelList) {
-            returnString.append(String.format("%s | %s and %s\n", channel.getName(), channel.getParticipantA().getName(), channel.getParticipantB().getName()));
+            returnString.append(String.format("%s | %s and %s\n", channel.getName(), channel.getSender().getName(), channel.getReceiver().getName()));
         }
 
         if(channelList.isEmpty())

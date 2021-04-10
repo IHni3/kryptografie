@@ -1,0 +1,1 @@
+"C:\Program Files\Java\jdk-15\bin\keytool" -genkey -alias crypto -keyalg RSA -keysize 2048 -keystore keystore.jks

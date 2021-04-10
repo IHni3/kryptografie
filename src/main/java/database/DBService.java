@@ -153,8 +153,8 @@ public enum DBService implements IDBService {
     @Override
     public void insertChannel(Channel channel) {
         insertChannel(channel.getName(),
-                channel.getParticipantA().getName(),
-                channel.getParticipantB().getName());
+                channel.getSender().getName(),
+                channel.getReceiver().getName());
     }
 
     @Override

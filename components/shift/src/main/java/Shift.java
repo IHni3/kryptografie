@@ -34,7 +34,7 @@ public class Shift {
 
     //Encrypt Message with Key from JSON File
     private String innerEncrypt(String plainMessage, File keyfile){
-        LoggingUtils.prepareLogger(logger, "encrypt", "shiftbase");
+        LoggingUtils.prepareLogger(logger, "encrypt", "shift");
 
         logger.printInfo("shift encrytion started");
 
@@ -61,7 +61,7 @@ public class Shift {
 
     //Decrypt Message with Key from JSON File
     private String innerDecrypt(String encryptedMessage, File keyfile) {
-        LoggingUtils.prepareLogger(logger, "decrypt", "shiftbase");
+        LoggingUtils.prepareLogger(logger, "decrypt", "shift");
 
         logger.printInfo("shift decryption started");
 

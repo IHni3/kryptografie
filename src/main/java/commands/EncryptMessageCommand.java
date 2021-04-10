@@ -7,6 +7,7 @@
 package commands;
 
 import components.ComponentUtils;
+import components.JarVerifier;
 import configuration.AlgorithmType;
 import configuration.Configuration;
 
@@ -52,6 +53,10 @@ public class EncryptMessageCommand implements ICommand{
     }
 
     private String callJarEncrypt(String jarPath, String className, String message, String keyfile) throws CommandExecutionException {
+
+        if(!JarVerifier.verify(jarPath))
+            throw new CommandExecutionException("jar verification failed!");
+
         try {
             var port = ComponentUtils.getPortFromJar(jarPath,className);
 

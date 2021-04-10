@@ -8,6 +8,7 @@ package commands;
 
 import configuration.Configuration;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -25,12 +26,12 @@ public class CrackMessageRsaCommand extends CrackMessageCommand {
 
     @Override
     protected Method onConstructMethod(Object port) throws NoSuchMethodException {
-        return port.getClass().getDeclaredMethod("decrypt", String.class, String.class);
+        return port.getClass().getDeclaredMethod("decrypt", String.class, File.class);
     }
 
     @Override
     protected Object onMethodInvoke(Object port, Method method) throws InvocationTargetException, IllegalAccessException {
-        return method.invoke(port, getMessage(), getKeyfile());
+        return method.invoke(port, getMessage(), new File(Configuration.instance.keyFilesDirectory + "//" + getKeyfile()));
     }
 
     @Override
@@ -40,6 +41,6 @@ public class CrackMessageRsaCommand extends CrackMessageCommand {
 
     @Override
     protected String getJarClass() {
-        return "RSACracker";
+        return "RsaCracker";
     }
 }

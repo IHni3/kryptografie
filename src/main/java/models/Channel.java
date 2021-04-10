@@ -15,18 +15,18 @@ import java.util.Arrays;
 public class Channel {
 
     private final String name;
-    private final Participant participantA;
-    private final Participant participantB;
+    private final Participant sender;
+    private final Participant receiver;
     private final EventBus eventBus;
 
-    public Channel(String name, Participant participantA, Participant participantB) {
+    public Channel(String name, Participant sender, Participant receiver) {
         this.name = name;
-        this.participantA = participantA;
-        this.participantB = participantB;
+        this.sender = sender;
+        this.receiver = receiver;
         this.eventBus = new EventBus();
 
-        eventBus.register(participantA);
-        eventBus.register(participantB);
+        //eventBus.register(sender);
+        eventBus.register(receiver);
 
         if (Configuration.instance.intrudedChannels.containsKey(name))
             for (var intruderName : Configuration.instance.intrudedChannels.get(name)) {
@@ -39,12 +39,12 @@ public class Channel {
         return this.name;
     }
 
-    public Participant getParticipantA(){
-        return this.participantA;
+    public Participant getSender(){
+        return this.sender;
     }
 
-    public Participant getParticipantB(){
-        return this.participantB;
+    public Participant getReceiver(){
+        return this.receiver;
     }
 
     public void send(BusMessage message){
@@ -64,3 +64,4 @@ public class Channel {
     }
 
 }
+//send message "test" from branch_hkg to branch_wuh using shift and keyfile shift6.json
