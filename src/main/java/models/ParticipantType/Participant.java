@@ -16,6 +16,8 @@ public class Participant implements IParticipantType {
 
     @Override
     public void receiveMessage(BusMessage message) {
+        if (message.getSender().getName().equals(this.participant.getName())) return;
+
         CommandUtils utils = new CommandUtils();
 
         try {

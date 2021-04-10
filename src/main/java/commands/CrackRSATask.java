@@ -19,15 +19,24 @@ public class CrackRSATask implements Callable<String> {
     @Override
     public String call() throws Exception {
         File keyfileFile = new File(Configuration.instance.keyFiles + keyfile);
+        if (!keyfileFile.exists()){
+            Configuration.instance.textAreaLogger.info("Keyfile " + keyfile + " not existing");
+            return null;
+        }
         String jarName = "rsa_cracker.jar";
         if (!JarVerifier.verifie(jarName)){
             Configuration.instance.textAreaLogger.info("jar could not be verified - not loading corrupted jar");
             return null;
         }
         try {
-            var port = Loader.getPort(Configuration.instance.jarPath + jarName +".jar", "cracker");
+            var port = Loader.getPort(Configuration.instance.jarPath + jarName, "cracker");
             var method = port.getClass().getDeclaredMethod("decrypt", String.class, File.class);
-            return method.invoke(port, message, keyfileFile).toString();
+            var answer = method.invoke(port, message, keyfileFile);
+            if (answer == null){
+                Configuration.instance.textAreaLogger.info("Problems Cracking Message probably invalid keyfile");
+                return null;
+            }
+            return answer.toString();
         } catch (IOException e){
             Configuration.instance.textAreaLogger.info("Keyfile could not be Processed");
             return null;

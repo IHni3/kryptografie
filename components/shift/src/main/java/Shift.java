@@ -33,9 +33,14 @@ public class Shift {
             return null;
         }
 
-        public String encrypt(File keyfile, String plain, Logger logger) throws IOException {
+        public String encrypt(File keyfile, String plain, Logger logger) {
 
-            var parsed = parseKeyfile(keyfile, logger);
+            Keyfile parsed = null;
+            try {
+                parsed = parseKeyfile(keyfile, logger);
+            } catch (IOException e) {
+                return null;
+            }
 
             logger.info("Parsed keyfile key: " + parsed.key);
 
@@ -43,8 +48,13 @@ public class Shift {
             return encryptRSA(plain, parsed.key, logger);
         }
 
-        public String decrypt(File keyfile, String cipher, Logger logger) throws IOException {
-            var parsed = parseKeyfile(keyfile, logger);
+        public String decrypt(File keyfile, String cipher, Logger logger) {
+            Keyfile parsed = null;
+            try {
+                parsed = parseKeyfile(keyfile, logger);
+            } catch (IOException e) {
+                return null;
+            }
 
             logger.info("Parsed keyfile key: " + parsed.key);
 
@@ -61,7 +71,8 @@ public class Shift {
             } catch (Exception e) { }
             logger.info("Parsing keyfile" + keyfile);
             Keyfile parsed = gson.fromJson(reader, Keyfile.class);
-            if (parsed == null) {
+            if (parsed.key == 0) {
+                logger.info("keyfile invalid");
                 throw new IOException();
             }
             return parsed;

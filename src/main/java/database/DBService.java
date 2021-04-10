@@ -49,7 +49,6 @@ public enum DBService implements IDBService {
 
     @Override
     public void dropChannel() {
-
     }
 
     @Override
@@ -105,10 +104,10 @@ public enum DBService implements IDBService {
     public void insertMessage(Message message) {
         insertMessage(message.getParticipantSender().getName(),
                 message.getParticipantReceiver().getName(),
-                message.getPlainMessage(),
                 message.getAlgorithm(),
-                message.getEncryptedMessage(),
-                message.getKeyfile());
+                message.getKeyfile(),
+                message.getPlainMessage(),
+                message.getEncryptedMessage());
     }
 
     @Override
@@ -157,7 +156,7 @@ public enum DBService implements IDBService {
     @Override
     public void insertPostboxMessage(String participantSender, String participantReceiver, String message) {
         if (!participantExists(participantSender) || !participantExists(participantReceiver)) {
-            Configuration.instance.textAreaLogger.info("Could not save postbox message, participant not found.");
+            Configuration.instance.textAreaLogger.info("Participant " + participantSender + " not found");
             return;
         }
 
@@ -165,8 +164,8 @@ public enum DBService implements IDBService {
         long timeStamp = Instant.now().getEpochSecond();
         try {
             db.update(String.format("INSERT INTO postbox_%s" +
-                            "(participant_from_id, message, timestamp)" +
-                            "VALUES (%d, %s, %d)",
+                            " (participant_from_id, message, timestamp)" +
+                            " VALUES (%d, \'%s\', %d)",
                     participantReceiver,
                     participantFromID,
                     message,
@@ -272,7 +271,7 @@ public enum DBService implements IDBService {
     public List<PostboxMessage> getPostboxMessages(String participant) {
         List<PostboxMessage> msgList = new ArrayList<>();
         if (!participantExists(participant)) {
-            Configuration.instance.textAreaLogger.info("Couldn't get postbox message, participant wasn't found.");
+            Configuration.instance.textAreaLogger.info("Participant" + participant + "not found");
         }
 
         try {
@@ -305,16 +304,14 @@ public enum DBService implements IDBService {
         try {
             ResultSet resultSet = db.executeQuery(sql);
             if (!resultSet.next()) {
-                throw new SQLException("No channel found with participants: " + participantA + " & " + participantB);
+                throw new SQLException("Channel between: " + participantA + ", " + participantB + "not existing");
             }
             channelName = resultSet.getString("name");
             return new Channel(channelName, getOneParticipant(participantA), getOneParticipant(participantB));
         } catch (SQLException exception) {
             Configuration.instance.textAreaLogger.info(exception.getMessage());
+            return null;
         }
-
-
-        return null;
     }
 
     public Channel getChannel(String channelName) {
@@ -331,14 +328,14 @@ public enum DBService implements IDBService {
             return new Channel(channelName, getParticipant(part1Id), getParticipant(part2Id));
         } catch (SQLException sqlException) {
             Configuration.instance.textAreaLogger.info(sqlException.getMessage());
+            return null;
         }
-        return null;
     }
 
     @Override
     public String getOneParticipantType(String participantName) {
         if (participantName == null)
-            return "";
+            return null;
 
         participantName = participantName.toLowerCase();
         int typeID = -1;
@@ -346,16 +343,15 @@ public enum DBService implements IDBService {
         try {
             ResultSet resultSet = db.executeQuery("SELECT TYPE_ID from PARTICIPANTS where name='" + participantName + "'");
             if (!resultSet.next()) {
-                throw new SQLException(participantName + " participant wasn't found.");
+                throw new SQLException(participantName + " not existing");
             }
             typeID = resultSet.getInt("TYPE_ID");
             return getTypeName(typeID);
 
         } catch (SQLException exception) {
             Configuration.instance.textAreaLogger.info(exception.getMessage());
+            return null;
         }
-
-        return "";
     }
 
     @Override
@@ -372,14 +368,13 @@ public enum DBService implements IDBService {
         try {
             ResultSet resultSet = db.executeQuery("SELECT name from channel where LOWER(name)='" + channelName.toLowerCase() + "'");
             if (!resultSet.next()) {
-                throw new SQLException(channelName + " channel wasn't found");
+                throw new SQLException();
             }
             return true;
         } catch (SQLException sqlException) {
             Configuration.instance.textAreaLogger.info(sqlException.getMessage());
+            return false;
         }
-
-        return false;
     }
 
     @Override
@@ -394,21 +389,20 @@ public enum DBService implements IDBService {
         try {
             ResultSet resultSet = db.executeQuery("SELECT ID from TYPES where name='" + name + "'");
             if (!resultSet.next()) {
-                throw new SQLException(name + " wasn't found in Type-Table");
+                throw new SQLException("Type "+ name + " not existing");
             }
             return resultSet.getInt("ID");
         } catch (SQLException sqlException) {
             Configuration.instance.textAreaLogger.info(sqlException.getMessage());
+            return -1;
         }
-
-        return -1;
     }
 
     private int getParticipantID(String name) {
         try {
             ResultSet resultSet = db.executeQuery("SELECT ID from PARTICIPANTS where name='" + name + "'");
             if (!resultSet.next()) {
-                throw new SQLException(name + " wasn't found in Participant-Table.");
+                throw new SQLException("Participant " + name + " not existing");
             }
             return resultSet.getInt("ID");
         } catch (SQLException sqlException) {
@@ -421,42 +415,39 @@ public enum DBService implements IDBService {
         try {
             ResultSet resultSet = db.executeQuery("SELECT name from participants where ID=" + participantID);
             if (!resultSet.next()) {
-                throw new SQLException(" Name of participant wasn't found for ID:" + participantID);
+                throw new SQLException("No participant found for id " + participantID);
             }
             return resultSet.getString("name");
         } catch (SQLException exception) {
             Configuration.instance.textAreaLogger.info(exception.getMessage());
+            return null;
         }
-
-        return "";
     }
 
     private String getTypeName(int typeID) {
         try {
             ResultSet resultSet = db.executeQuery(String.format("SELECT name from TYPES where ID=%d", typeID));
             if (!resultSet.next()) {
-                throw new SQLException("No name of type found for ID: " + typeID);
+                throw new SQLException("No type found for ID " + typeID);
             }
             return resultSet.getString("name");
         } catch (SQLException exception) {
             Configuration.instance.textAreaLogger.info(exception.getMessage());
+            return null;
         }
-
-        return "";
     }
 
     private int getAlgorithmID(String algorithm) {
         try {
             ResultSet resultSet = db.executeQuery(String.format("SELECT ID from ALGORITHMS where LOWER(name)=LOWER('%s')", algorithm));
             if (!resultSet.next()) {
-                throw new SQLException((algorithm + " algorithm wasn't found in Algorithm Table"));
+                throw new SQLException(("Algorithm " + algorithm + " not existing"));
             }
             return resultSet.getInt("ID");
         } catch (SQLException sqlException) {
             Configuration.instance.textAreaLogger.info(sqlException.getMessage());
+            return -1;
         }
-
-        return -1;
     }
 
     private Participant getParticipant(int partID) {
@@ -465,26 +456,24 @@ public enum DBService implements IDBService {
     }
 
     public void createInitialValues() {
+        System.out.println("inserting initial values");
+
         insertType("normal");
         insertType("intruder");
 
-        var branch_hkg = new Participant("branch_hkg","normal");
-        var branch_wuh = new Participant("branch_wuh","normal");
-        var branch_cpt = new Participant("branch_cpt","normal");
-        var branch_syd = new Participant("branch_syd","normal");
-        var branch_sfo = new Participant("branch_sfo","normal");
-        var msa = new Participant("msa","intruder");
+        insertAlgorithm("shift");
+        insertAlgorithm("rsa");
 
-        insertParticipant(branch_hkg);
-        insertParticipant(branch_wuh);
-        insertParticipant(branch_cpt);
-        insertParticipant(branch_syd);
-        insertParticipant(branch_sfo);
-        insertParticipant(msa);
+        insertParticipant("branch_hkg","normal");
+        insertParticipant("branch_wuh","normal");
+        insertParticipant("branch_cpt","normal");
+        insertParticipant("branch_syd","normal");
+        insertParticipant("branch_sfo","normal");
+        insertParticipant("msa","intruder");
 
-        insertChannel(new Channel("hkg_wuh",branch_hkg,branch_wuh));
-        insertChannel(new Channel("hkg_cpt",branch_hkg,branch_cpt));
-        insertChannel(new Channel("cpt_syd",branch_cpt,branch_syd));
-        insertChannel(new Channel("syd_sfo",branch_syd,branch_sfo));
+        insertChannel("hkg_wuh","branch_hkg","branch_wuh");
+        insertChannel("hkg_cpt","branch_hkg","branch_cpt");
+        insertChannel("cpt_syd","branch_cpt","branch_syd");
+        insertChannel("syd_sfo","branch_syd","branch_sfo");
     }
 }

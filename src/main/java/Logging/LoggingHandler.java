@@ -1,10 +1,10 @@
-package configuration;
+package Logging;
+
+import configuration.Configuration;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 public class LoggingHandler {
     Handler handler;
@@ -21,6 +21,8 @@ public class LoggingHandler {
             logger.removeHandler(handler);
         try {
             handler = new FileHandler(String.format("log/%s_%s_%d.txt", direction, algorithmType, new Date().getTime()/1000));
+            handler.setFormatter(new SimpleFormatter());
+            handler.setLevel(Level.FINE);
             logger.addHandler(handler);
         } catch (IOException e){
             Configuration.instance.textAreaLogger.info("Problems creating logfile");

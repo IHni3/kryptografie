@@ -47,7 +47,7 @@ public enum HSQLDB {
 
         StringBuilder sqlStringBuilder01 = new StringBuilder();
         sqlStringBuilder01.append("CREATE TABLE IF NOT EXISTS algorithms (");
-        sqlStringBuilder01.append("id TINYINT NOT NULL").append(",");
+        sqlStringBuilder01.append("id TINYINT NOT NULL IDENTITY").append(",");
         sqlStringBuilder01.append("name VARCHAR(10) NOT NULL").append(",");
         sqlStringBuilder01.append("PRIMARY KEY (id)");
         sqlStringBuilder01.append(")");
@@ -70,7 +70,7 @@ public enum HSQLDB {
 
         StringBuilder sqlStringBuilder01 = new StringBuilder();
         sqlStringBuilder01.append("CREATE TABLE IF NOT EXISTS types (");
-        sqlStringBuilder01.append("id TINYINT NOT NULL").append(",");
+        sqlStringBuilder01.append("id TINYINT NOT NULL IDENTITY").append(",");
         sqlStringBuilder01.append("name VARCHAR(10) NOT NULL").append(",");
         sqlStringBuilder01.append("PRIMARY KEY (id)");
         sqlStringBuilder01.append(")");
@@ -94,7 +94,7 @@ public enum HSQLDB {
 
         StringBuilder sqlStringBuilder01 = new StringBuilder();
         sqlStringBuilder01.append("CREATE TABLE IF NOT EXISTS participants (");
-        sqlStringBuilder01.append("id TINYINT NOT NULL").append(",");
+        sqlStringBuilder01.append("id TINYINT NOT NULL IDENTITY").append(",");
         sqlStringBuilder01.append("name VARCHAR(50) NOT NULL").append(",");
         sqlStringBuilder01.append("type_id TINYINT NULL").append(",");
         sqlStringBuilder01.append("PRIMARY KEY (id)");
@@ -169,7 +169,7 @@ public enum HSQLDB {
 
         StringBuilder sqlStringBuilder01 = new StringBuilder();
         sqlStringBuilder01.append("CREATE TABLE IF NOT EXISTS messages (");
-        sqlStringBuilder01.append("id TINYINT NOT NULL").append(",");
+        sqlStringBuilder01.append("id TINYINT NOT NULL IDENTITY").append(",");
         sqlStringBuilder01.append("participant_from_id TINYINT NOT NULL").append(",");
         sqlStringBuilder01.append("participant_to_id TINYINT NOT NULL").append(",");
         sqlStringBuilder01.append("plain_message VARCHAR(50) NOT NULL").append(",");
@@ -220,7 +220,7 @@ public enum HSQLDB {
 
         StringBuilder sqlStringBuilder01 = new StringBuilder();
         sqlStringBuilder01.append("CREATE TABLE IF NOT EXISTS ").append(table).append(" (");
-        sqlStringBuilder01.append("id TINYINT NOT NULL").append(",");
+        sqlStringBuilder01.append("id TINYINT NOT NULL IDENTITY").append(",");
         sqlStringBuilder01.append("participant_from_id TINYINT NOT NULL").append(",");
         sqlStringBuilder01.append("message VARCHAR(50) NOT NULL").append(",");
         sqlStringBuilder01.append("timestamp BIGINT NOT NULL").append(",");

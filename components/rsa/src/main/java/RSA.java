@@ -37,8 +37,13 @@ public class RSA {
             return null;
         }
 
-        public String encrypt(File keyfile, String plain, Logger logger) throws IOException {
-            var parsed = parseKeyfile(keyfile, logger);
+        public String encrypt(File keyfile, String plain, Logger logger) {
+            Keyfile parsed = null;
+            try {
+                parsed = parseKeyfile(keyfile, logger);
+            } catch (IOException e) {
+                return null;
+            }
 
             Key key = new Key(parsed.n, parsed.e);
             logger.info("Parsing done public key: " + key.getE());
@@ -47,9 +52,14 @@ public class RSA {
             return encryptRSA(plain, key, logger);
         }
 
-        public String decrypt(File keyfile, String cipher, Logger logger) throws IOException {
+        public String decrypt(File keyfile, String cipher, Logger logger) {
 
-            var parsed = parseKeyfile(keyfile, logger);
+            Keyfile parsed = null;
+            try {
+                parsed = parseKeyfile(keyfile, logger);
+            } catch (IOException e) {
+                return null;
+            }
 
             Key key = new Key(parsed.n, parsed.d);
 
@@ -69,7 +79,8 @@ public class RSA {
             logger.info("Parsing keyfile");
             Keyfile parsed = gson.fromJson(reader, Keyfile.class);
 
-            if (parsed == null) {
+            if (parsed.e == null || parsed.d == null || parsed.n == null) {
+                logger.info("keyfile invalid");
                 throw new IOException();
             }
 

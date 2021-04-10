@@ -8,19 +8,18 @@ package commands;
 
 import configuration.AlgorithmType;
 import configuration.Configuration;
-import configuration.ParticipantType;
 import database.DBService;
 import models.BusMessage;
 import models.Channel;
 import models.Message;
 import models.Participant;
-import models.ParticipantType.Intruder;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.*;
+import java.util.logging.Logger;
 
 public class CommandUtils {
 
@@ -139,7 +138,7 @@ public class CommandUtils {
 
         String encrypted = encrypt(message, algorithmType, keyfile);
 
-        Message dbMessage = new Message(senderPart, recieverPart, algorithmType.toString(), keyfile, timestamp, message, encrypted);
+        Message dbMessage = new Message(senderPart, recieverPart, algorithmType.toString().toLowerCase(Locale.ROOT), keyfile, timestamp, message, encrypted);
         channel.send(new BusMessage(encrypted, senderPart, recieverPart, algorithmType, keyfile));
 
         DBService.instance.insertMessage(dbMessage);
@@ -147,16 +146,26 @@ public class CommandUtils {
 
     public String encrypt(String message, AlgorithmType algorithmType, String keyfile){
         File keyfileFile = new File(Configuration.instance.keyFiles + keyfile);
-        String jarName = algorithmType.equals(AlgorithmType.RSA) ? "rsa" : "shift";
-        String className = algorithmType.equals(AlgorithmType.RSA) ? "RSA" : "shift";
+        if (!keyfileFile.exists()){
+            Configuration.instance.textAreaLogger.info("Keyfile " + keyfile + " not existing");
+            return null;
+        }
+        Configuration.instance.loggingHandler.newLogfile(algorithmType.toString(), "encrypt");
+        String jarName = (algorithmType.equals(AlgorithmType.RSA) ? "rsa" : "shift") + ".jar";
+        String className = algorithmType.equals(AlgorithmType.RSA) ? "RSA" : "Shift";
         if (!JarVerifier.verifie(jarName)){
             Configuration.instance.textAreaLogger.info("jar could not be verified - not loading corrupted jar");
             return null;
         }
         try {
-            var port = Loader.getPort(Configuration.instance.jarPath + jarName +".jar", className);
-            var method = port.getClass().getDeclaredMethod("encrypt", String.class, File.class);
-            return method.invoke(port, message, keyfileFile).toString();
+            var port = Loader.getPort(Configuration.instance.jarPath + jarName, className);
+            var method = port.getClass().getDeclaredMethod("encrypt", File.class, String.class, Logger.class);
+            var answer = method.invoke(port, keyfileFile, message, Configuration.instance.loggingHandler.getLogger());
+            if (answer == null){
+                Configuration.instance.textAreaLogger.info("Problems encrypting message, keyfile might be invalid");
+                return null;
+            }
+            return answer.toString();
         } catch (IOException e) {
             Configuration.instance.textAreaLogger.info("Invalid Keyfile Provided");
             return null;
@@ -168,16 +177,26 @@ public class CommandUtils {
 
     public String decrypt(String message, AlgorithmType algorithmType, String keyfile){
         File keyfileFile = new File(Configuration.instance.keyFiles  + keyfile);
-        String jarName = algorithmType.equals(AlgorithmType.RSA) ? "rsa" : "shift";
-        String className = algorithmType.equals(AlgorithmType.RSA) ? "RSA" : "shift";
+        if (!keyfileFile.exists()){
+            Configuration.instance.textAreaLogger.info("Keyfile " + keyfile + " not existing");
+            return null;
+        }
+        Configuration.instance.loggingHandler.newLogfile(algorithmType.toString(), "decrypt");
+        String jarName = (algorithmType.equals(AlgorithmType.RSA) ? "rsa" : "shift") + ".jar";
+        String className = algorithmType.equals(AlgorithmType.RSA) ? "RSA" : "Shift";
         if (!JarVerifier.verifie(jarName)){
             Configuration.instance.textAreaLogger.info("jar could not be verified - not loading corrupted jar");
             return null;
         }
         try {
-            var port = Loader.getPort(Configuration.instance.jarPath + jarName +".jar", className);
-            var method = port.getClass().getDeclaredMethod("decrypt", String.class, File.class);
-            return method.invoke(port, message, keyfileFile).toString();
+            var port = Loader.getPort(Configuration.instance.jarPath + jarName, className);
+            var method = port.getClass().getDeclaredMethod("decrypt", File.class, String.class, Logger.class);
+            var answer = method.invoke(port, keyfileFile, message, Configuration.instance.loggingHandler.getLogger());
+            if (answer == null){
+                Configuration.instance.textAreaLogger.info("Problems decrypting message, keyfile might be invalid");
+                return null;
+            }
+            return answer.toString();
         } catch (IOException e) {
             Configuration.instance.textAreaLogger.info("Invalid Keyfile Provided");
             return null;

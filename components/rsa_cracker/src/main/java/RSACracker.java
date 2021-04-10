@@ -1,30 +1,27 @@
 import com.google.gson.Gson;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Reader;
 import java.math.BigInteger;
 import java.nio.file.Files;
-import java.security.Key;
 import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
-public class RsaCracker {
-    private static RsaCracker instance = new RsaCracker();
+public class RSACracker {
+    private static RSACracker instance = new RSACracker();
 
     private BigInteger e = BigInteger.ZERO;
     private BigInteger n = BigInteger.ZERO;
 
     public Port port;
 
-    private RsaCracker() {
+    private RSACracker() {
         port = new Port();
     }
 
-    public static RsaCracker getInstance() {
+    public static RSACracker getInstance() {
         return instance;
     }
 
@@ -38,9 +35,13 @@ public class RsaCracker {
         }
     }
 
-    private String decryptMessage(String encryptedMessage, File publicKeyfile) throws IOException {
-        loadKeyFile(publicKeyfile);
+    private String decryptMessage(String encryptedMessage, File publicKeyfile) {
 
+        try {
+            loadKeyFile(publicKeyfile);
+        } catch (IOException ioException) {
+            return null;
+        }
 
 
         byte[] bytes = Base64.getDecoder().decode(encryptedMessage);
@@ -51,7 +52,7 @@ public class RsaCracker {
                 return null;
             byte[] plainBytes = plain.toByteArray();
             return new String(plainBytes);
-        } catch (RsaCrackingException e) {
+        } catch (RSACrackingException e) {
             System.out.println(e.getMessage());
         }
         return null;
@@ -61,17 +62,21 @@ public class RsaCracker {
         Gson gson = new Gson();
         Reader reader = null;
 
-        reader = Files.newBufferedReader(keyfile.toPath());
+        try {
+            reader = Files.newBufferedReader(keyfile.toPath());
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
 
         Keyfile parsed = gson.fromJson(reader, Keyfile.class);
 
-        if (parsed == null) throw new IOException();
+        if (parsed.e == null || parsed.d == null || parsed.n == null) throw new IOException();
 
         e = parsed.e;
         n = parsed.n;
     }
 
-    private BigInteger execute(BigInteger cipher) throws RsaCrackingException {
+    private BigInteger execute(BigInteger cipher) throws RSACrackingException {
         BigInteger p, q, d;
         List<BigInteger> factorList = factorize(n);
 
@@ -79,7 +84,7 @@ public class RsaCracker {
             return null;
 
         if (factorList.size() != 2) {
-            throw new RsaCrackingException("cannot determine factors p and q");
+            throw new RSACrackingException("cannot determine factors p and q");
         }
 
         p = factorList.get(0);

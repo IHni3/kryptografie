@@ -2,34 +2,22 @@
 import java.text.DecimalFormat;
 
 public class ShiftCracker {
-    // static instance
     private static final ShiftCracker instance = new ShiftCracker();
-
-    // port
     public Port port;
 
-    int key;
+    private int key;
 
     private static final DecimalFormat decimalFormat = new DecimalFormat("#0.00000");
 
-    // private constructor
     private ShiftCracker() {
         port = new Port();
     }
 
-    // static method getInstance
     public static ShiftCracker getInstance() {
         return instance;
     }
 
-    // inner methods
-    public String innerVersion() {
-        return "ShiftCracker";
-    }
-
-
-    //Decrypt Message with Key from JSON File
-    private String innerDecrypt(String encryptedMessage) {
+    private String decrypt(String encryptedMessage) {
 
         if (encryptedMessage.equals("")) {
             System.exit(0);
@@ -53,26 +41,19 @@ public class ShiftCracker {
             unicodeCopy[count] = dec;
         }
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 
         for (int shift = 1; shift <= 25; shift++) {
-            sb.append(smartShift(shift, unicode, unicodeCopy));
+            builder.append(smartShift(shift, unicode, unicodeCopy));
         }
 
-        return sb.toString();
+        return builder.toString();
     }
 
-
-    // inner class port
     public class Port {
-        public String version() {
-            return innerVersion();
-        }
-
         public String decrypt(String encryptedMessage) {
-            return innerDecrypt(encryptedMessage);
+            return decrypt(encryptedMessage);
         }
-
     }
 
 
@@ -137,13 +118,7 @@ public class ShiftCracker {
 
         if (eFrequency / frequency >= 0.05 || aFrequency / frequency >= 0.05 || iFrequency / frequency >= 0.05 || oFrequency / frequency >= 0.05 || uFrequency / frequency >= 0.05) {
             return (stringBuilder.toString());
-            //System.out.println("\t\tA : " + decimalFormat.format(aFrequency / frequency));
-            //System.out.println("\t\tE : " + decimalFormat.format(eFrequency / frequency));
-            //System.out.println("\t\tI : " + decimalFormat.format(iFrequency / frequency));
-            //System.out.println("\t\tO : " + decimalFormat.format(oFrequency / frequency));
-            //System.out.println("\t\tU : " + decimalFormat.format(uFrequency / frequency));
         }
-
-        return "";
+        return null;
     }
 }

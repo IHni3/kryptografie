@@ -1,6 +1,9 @@
 import configuration.Configuration;
 import database.DBService;
+import database.HSQLDB;
 import gui.GUI;
+
+import java.sql.SQLException;
 
 public class Application {
 
@@ -15,7 +18,13 @@ public class Application {
 
     public void init(){
         Configuration.instance.textAreaLogger.setUseParentHandlers(false);
+        try {
+            HSQLDB.instance.setupDatabase();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
         dbService.setupConnection();
+        if (!DBService.instance.participantExists("msa")) DBService.instance.createInitialValues();
     }
 
     private void startupGUI(){

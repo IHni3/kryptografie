@@ -20,7 +20,7 @@ public class CrackShiftTask implements Callable<String> {
             return null;
         }
         try {
-            var port = Loader.getPort(Configuration.instance.jarPath + jarName +".jar", "cracker");
+            var port = Loader.getPort(Configuration.instance.jarPath + jarName, "cracker");
             var method = port.getClass().getDeclaredMethod("decrypt", String.class);
             return method.invoke(port, message).toString();
         } catch (Exception e){

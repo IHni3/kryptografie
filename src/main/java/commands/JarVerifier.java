@@ -10,7 +10,7 @@ public class JarVerifier {
     public static boolean verifie(String jarFile) {
         boolean isComponentAccepted = false;
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder(Configuration.instance.jdkPath + "jarsigner", "-verify", jarFile);
+            ProcessBuilder processBuilder = new ProcessBuilder(Configuration.instance.jdkPath + "jarsigner", "-verify", Configuration.instance.jarPath + jarFile);
             Process process = processBuilder.start();
             process.waitFor();
 
