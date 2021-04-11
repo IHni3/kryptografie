@@ -18,12 +18,12 @@ public class Application {
 
     public void init(){
         Configuration.instance.textAreaLogger.setUseParentHandlers(false);
+        dbService.setupConnection();
         try {
             HSQLDB.instance.setupDatabase();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        dbService.setupConnection();
         if (!DBService.instance.participantExists("msa")) DBService.instance.createInitialValues();
     }
 

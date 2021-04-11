@@ -15,8 +15,8 @@ public class CompactParser {
         String[] patterns = new String[]{
                 "(encrypt message) \"(.+)\" using (rsa|shift) and keyfile ([A-Za-z0-9\\. ]*)",
                 "(decrypt message) \"(.+)\" using (rsa|shift) and keyfile ([A-Za-z0-9\\. ]*)",
-                "(crack encrypted message) \"([A-Za-z0-9_ ]*)\" using (shift)",
-                "(crack encrypted message) \"([A-Za-z0-9_ ]*)\" using (rsa) and keyfile ([A-Za-z0-9\\. ]*)",
+                "(crack encrypted message) \"(.+)\" using (shift)",
+                "(crack encrypted message) \"(.+)\" using (rsa) and keyfile ([A-Za-z0-9\\. ]*)",
                 "(register participant) ([A-Za-z0-9_ ]*) with type (normal|intruder)",
                 "(create channel) ([A-Za-z0-9_ ]*) from ([A-Za-z0-9_ ]*) to ([A-Za-z0-9_ ]*)",
                 "(show channel)",

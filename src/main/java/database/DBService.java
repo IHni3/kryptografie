@@ -24,31 +24,8 @@ public enum DBService implements IDBService {
     }
 
     @Override
-    public void createAllTables() {
-
-        try {
-            db.createTableTypes();
-            db.createTableAlgorithms();
-            db.createTableParticipants();
-            db.createTableChannel();
-            db.createTableMessages();
-        } catch (SQLException exception) {
-            Configuration.instance.textAreaLogger.info(exception.toString());
-        }
-
-    }
-
-    @Override
-    public void dropAllTables() {
-    }
-
-    @Override
     public void shutdown() {
         db.shutdown();
-    }
-
-    @Override
-    public void dropChannel() {
     }
 
     @Override
@@ -197,57 +174,6 @@ public enum DBService implements IDBService {
     }
 
     @Override
-    public List<String> getAlgorithms() {
-        List<String> algorithms = new ArrayList<>();
-        try {
-            String sqlStatement = "SELECT * from ALGORITHMS";
-            ResultSet resultSet = db.executeQuery(sqlStatement);
-            while (resultSet.next()) {
-                algorithms.add(resultSet.getString("name"));
-            }
-
-        } catch (SQLException sqlException) {
-            Configuration.instance.textAreaLogger.info(sqlException.getMessage());
-        }
-        return algorithms;
-    }
-
-    @Override
-    public List<String> getTypes() {
-        List<String> types = new ArrayList<>();
-        try {
-            String sqlStatement = "SELECT * from TYPES";
-            ResultSet resultSet = db.executeQuery(sqlStatement);
-            while (resultSet.next()) {
-                types.add(resultSet.getString("name"));
-            }
-
-        } catch (SQLException sqlException) {
-            Configuration.instance.textAreaLogger.info(sqlException.getMessage());
-        }
-        return types;
-    }
-
-    @Override
-    public List<Participant> getParticipants() {
-        List<Participant> participants = new ArrayList<>();
-        try {
-            String sqlStatement = "SELECT * from PARTICIPANTS";
-            ResultSet resultSet = db.executeQuery(sqlStatement);
-            while (resultSet.next()) {
-                String name = resultSet.getString("name");
-                String type = getTypeName(resultSet.getInt("type_id"));
-                Participant p = new Participant(name, type);
-                participants.add(p);
-            }
-
-        } catch (SQLException sqlException) {
-            Configuration.instance.textAreaLogger.info(sqlException.getMessage());
-        }
-        return participants;
-    }
-
-    @Override
     public List<Channel> getChannels() {
         List<Channel> channelList = new ArrayList<>();
 
@@ -267,31 +193,6 @@ public enum DBService implements IDBService {
         return channelList;
     }
 
-    @Override
-    public List<PostboxMessage> getPostboxMessages(String participant) {
-        List<PostboxMessage> msgList = new ArrayList<>();
-        if (!participantExists(participant)) {
-            Configuration.instance.textAreaLogger.info("Participant" + participant + "not found");
-        }
-
-        try {
-            ResultSet resultSet = db.executeQuery("SELECT * from POSTBOX_" + participant);
-            while (resultSet.next()) {
-                int partFromID = resultSet.getInt("participant_from_id");
-                String partFromName = getParticipantName(partFromID);
-                Participant partFrom = new Participant(partFromName, getOneParticipantType(partFromName));
-                Participant partTo = new Participant(participant, getOneParticipantType(participant));
-                String timestamp = Integer.toString(resultSet.getInt("timestamp"));
-                String message = resultSet.getString("message");
-                PostboxMessage pbM = new PostboxMessage(partFrom, partTo, message, timestamp);
-                msgList.add(pbM);
-            }
-        } catch (SQLException exception) {
-            Configuration.instance.textAreaLogger.info(exception.getMessage());
-        }
-
-        return msgList;
-    }
 
     @Override
     public Channel getChannel(String participantA, String participantB) {

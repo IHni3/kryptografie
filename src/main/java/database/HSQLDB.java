@@ -24,8 +24,6 @@ public enum HSQLDB {
     }
 
     public synchronized int update(String sqlStatement) throws SQLException {
-        Configuration.instance.textAreaLogger.info("executing: " + sqlStatement);
-
         Statement statement = connection.createStatement();
         var ret = statement.executeUpdate(sqlStatement);
         statement.close();

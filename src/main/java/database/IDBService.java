@@ -17,13 +17,7 @@ public interface IDBService {
 
     void setupConnection();
 
-    void createAllTables();
-
-    void dropAllTables();
-
     void shutdown();
-
-    void dropChannel();
 
     // Inserts
 
@@ -50,22 +44,13 @@ public interface IDBService {
 
     // Getter
 
-    List<String> getAlgorithms();
-
-    List<String> getTypes();
-
-    List<Participant> getParticipants();
-
     List<Channel> getChannels();
-
-    List<PostboxMessage> getPostboxMessages(String participant);
 
     Channel getChannel(String participantA, String participantB);
 
     String getOneParticipantType(String participantName);
 
     Participant getOneParticipant(String participantName);
-
 
     // Check for existence
 

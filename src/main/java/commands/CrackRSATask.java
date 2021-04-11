@@ -29,7 +29,7 @@ public class CrackRSATask implements Callable<String> {
             return null;
         }
         try {
-            var port = Loader.getPort(Configuration.instance.jarPath + jarName, "cracker");
+            var port = Loader.getPort(Configuration.instance.jarPath + jarName, "RSACracker");
             var method = port.getClass().getDeclaredMethod("decrypt", String.class, File.class);
             var answer = method.invoke(port, message, keyfileFile);
             if (answer == null){

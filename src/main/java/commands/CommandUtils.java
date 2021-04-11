@@ -57,7 +57,7 @@ public class CommandUtils {
         StringBuilder returnString = new StringBuilder();
 
         for (var channel : channelList) {
-            Configuration.instance.textAreaLogger.info(String.format("%s | %s and %s\n", channel.getName(), channel.getParticipantA().getName(), channel.getParticipantB().getName()));
+            Configuration.instance.textAreaLogger.info(String.format("%s | %s and %s", channel.getName(), channel.getParticipantA().getName(), channel.getParticipantB().getName()));
         }
 
         if(channelList.isEmpty()){
@@ -78,7 +78,7 @@ public class CommandUtils {
     }
 
     public  void createChannel(String channelName, String part1name, String part2name){
-        if (DBService.instance.getChannel(channelName) != null){
+        if (DBService.instance.channelExists(channelName)){
             Configuration.instance.textAreaLogger.info(String.format("channel %s already exists", channelName));
         }
 
@@ -112,10 +112,11 @@ public class CommandUtils {
         }
 
         channel.intrude(intruder);
+        Configuration.instance.textAreaLogger.info(String.format("Channel %s got intruded by %s", channelName, participant));
     }
 
     public void registerParticipant(String name, String type){
-        if (DBService.instance.getOneParticipant(name) != null){
+        if (DBService.instance.participantExists(name)){
             Configuration.instance.textAreaLogger.info(String.format("participant %s already exists, using existing postbox_%s", name));
         }
 

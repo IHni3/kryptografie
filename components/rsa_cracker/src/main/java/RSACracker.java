@@ -30,7 +30,7 @@ public class RSACracker {
             return null;
         }
 
-        public String decrypt(String encryptedMessage, File publicKeyfile) throws IOException {
+        public String decrypt(String encryptedMessage, File publicKeyfile) {
             return decryptMessage(encryptedMessage, publicKeyfile);
         }
     }
