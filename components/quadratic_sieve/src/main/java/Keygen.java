@@ -1,7 +1,6 @@
 import java.math.BigInteger;
-import java.security.SecureRandom;
 
-public class RSAKeygen {
+public class Keygen {
     private final BigInteger p;
     private final BigInteger q;
     private final BigInteger n;
@@ -11,13 +10,12 @@ public class RSAKeygen {
     private final Key publicKey;
     private final Key privateKey;
 
-    public RSAKeygen(int keyLength) {
-        SecureRandom randomGenerator = new SecureRandom();
+    public Keygen(BigInteger p, BigInteger n) {
 
-        p = new BigInteger(keyLength, 100, randomGenerator).nextProbablePrime();
-        q = new BigInteger(keyLength, 100, randomGenerator).nextProbablePrime();
+        this.p = p;
+        this.n = n;
 
-        n = p.multiply(q);
+        q = n.divide(p);
         t = (p.subtract(BigInteger.ONE)).multiply(q.subtract(BigInteger.ONE));
         e = getCoPrime(t);
         d = e.modInverse(t);

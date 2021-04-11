@@ -61,7 +61,7 @@ public class RSA {
                 return null;
             }
 
-            Key key = new Key(parsed.n, parsed.d);
+            Key key = new Key(parsed.n, parsed.e);
 
             logger.info("Parsed keyfile private key: " + key.getE());
 
@@ -73,13 +73,13 @@ public class RSA {
             Gson gson = new Gson();
             Reader reader = null;
             try {
-                logger.info("Loading keyfile" + keyfile);
+                logger.info("Loading keyfilen " + keyfile);
                 reader = Files.newBufferedReader(keyfile.toPath());
             } catch (Exception e) { }
             logger.info("Parsing keyfile");
             Keyfile parsed = gson.fromJson(reader, Keyfile.class);
 
-            if (parsed.e == null || parsed.d == null || parsed.n == null) {
+            if (parsed.e == null || parsed.n == null) {
                 logger.info("keyfile invalid");
                 throw new IOException();
             }
@@ -90,14 +90,12 @@ public class RSA {
 
     public class Keyfile{
         BigInteger e;
-        BigInteger d;
         BigInteger n;
 
         public Keyfile(){}
 
-        public Keyfile(BigInteger e, BigInteger d, BigInteger n){
+        public Keyfile(BigInteger e, BigInteger n){
             this.e = e;
-            this.d = d;
             this.n = n;
         }
 

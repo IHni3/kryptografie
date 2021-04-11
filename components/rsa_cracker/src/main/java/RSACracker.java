@@ -70,7 +70,7 @@ public class RSACracker {
 
         Keyfile parsed = gson.fromJson(reader, Keyfile.class);
 
-        if (parsed.e == null || parsed.d == null || parsed.n == null) throw new IOException();
+        if (parsed.e == null || parsed.n == null) throw new IOException();
 
         e = parsed.e;
         n = parsed.n;
@@ -129,14 +129,12 @@ public class RSACracker {
 
     public class Keyfile{
         BigInteger e;
-        BigInteger d;
         BigInteger n;
 
         public Keyfile(){}
 
-        public Keyfile(BigInteger e, BigInteger d, BigInteger n){
+        public Keyfile(BigInteger e, BigInteger n){
             this.e = e;
-            this.d = d;
             this.n = n;
         }
 

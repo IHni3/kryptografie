@@ -1,10 +1,11 @@
-package commands;
+package execute.Tasks;
 
 import configuration.Configuration;
+import execute.JarLoader;
+import execute.JarVerifier;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.concurrent.Callable;
 
 public class CrackRSATask implements Callable<String> {
@@ -29,7 +30,7 @@ public class CrackRSATask implements Callable<String> {
             return null;
         }
         try {
-            var port = Loader.getPort(Configuration.instance.jarPath + jarName, "RSACracker");
+            var port = JarLoader.getPort(Configuration.instance.jarPath + jarName, "RSACracker");
             var method = port.getClass().getDeclaredMethod("decrypt", String.class, File.class);
             var answer = method.invoke(port, message, keyfileFile);
             if (answer == null){

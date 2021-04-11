@@ -1,4 +1,4 @@
-package commands;
+package execute;
 
 import configuration.Configuration;
 

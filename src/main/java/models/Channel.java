@@ -8,7 +8,6 @@ package models;
 
 
 import com.google.common.eventbus.EventBus;
-import configuration.AlgorithmType;
 import configuration.Configuration;
 import database.DBService;
 

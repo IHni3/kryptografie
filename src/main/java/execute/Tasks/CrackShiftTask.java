@@ -1,8 +1,9 @@
-package commands;
+package execute.Tasks;
 
 import configuration.Configuration;
+import execute.JarLoader;
+import execute.JarVerifier;
 
-import java.math.BigInteger;
 import java.util.concurrent.Callable;
 
 public class CrackShiftTask implements Callable<String> {
@@ -20,7 +21,7 @@ public class CrackShiftTask implements Callable<String> {
             return null;
         }
         try {
-            var port = Loader.getPort(Configuration.instance.jarPath + jarName, "ShiftCracker");
+            var port = JarLoader.getPort(Configuration.instance.jarPath + jarName, "ShiftCracker");
             var method = port.getClass().getDeclaredMethod("decrypt", String.class);
             return method.invoke(port, message).toString();
         } catch (Exception e){

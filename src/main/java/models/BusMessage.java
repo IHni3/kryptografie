@@ -6,7 +6,7 @@
 
 package models;
 
-import configuration.AlgorithmType;
+import models.enums.AlgorithmType;
 
 public class BusMessage {
 

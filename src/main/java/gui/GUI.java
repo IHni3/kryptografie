@@ -1,9 +1,7 @@
 package gui;
 
 import configuration.Configuration;
-import gui.TextAreaHandler;
 import javafx.application.Application;
-import javafx.css.Match;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -15,15 +13,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import parser.CompactParser;
+import parser.CommandParser;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class GUI extends Application {
@@ -91,7 +87,7 @@ public class GUI extends Application {
     }
 
     private void execute(String command){
-        CompactParser.evaluateCommand(command);
+        CommandParser.evaluateCommand(command);
     }
 
     private void loadLogfile(TextArea logArea){

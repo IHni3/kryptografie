@@ -1,4 +1,5 @@
-import java.io.File;
+package Keygen;
+
 import java.math.BigInteger;
 
 public class Key {

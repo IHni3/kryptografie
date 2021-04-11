@@ -11,7 +11,6 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    implementation 'com.google.code.gson:gson:2.8.6'
 }
 
 test {
@@ -19,10 +18,10 @@ test {
 }
 
 task build_jar(type: Jar) {
-    project.archivesBaseName = "rsa_cracker"
+    project.archivesBaseName = "quadratic_sieve"
 
     manifest {
-        attributes["Main-Class"] = "RSACracker"
+        attributes["Main-Class"] = "Sieve"
     }
 
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
