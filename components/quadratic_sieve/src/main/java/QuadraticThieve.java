@@ -1,7 +1,5 @@
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class QuadraticThieve extends Logger {
@@ -56,6 +54,19 @@ public class QuadraticThieve extends Logger {
             threads.add(thread);
             thread.start();
         }
+        killDelay(60000L, threads);
+    }
+
+    public void killDelay(long delay, List<Thread> toKill) {
+        TimerTask task = new TimerTask() {
+            public void run() {
+                for (Thread thread: toKill){
+                    thread.stop();
+                }
+            }
+        };
+        Timer timer = new Timer("Timer");
+        timer.schedule(task, delay);
     }
 
     private void execute(int threadId) {

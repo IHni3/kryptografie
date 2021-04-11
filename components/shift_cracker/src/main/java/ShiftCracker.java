@@ -23,12 +23,14 @@ public class ShiftCracker {
             System.exit(0);
         }
 
-        char[] sourceText = new char[encryptedMessage.length()];
-        int[] unicode = new int[encryptedMessage.length()];
-        int[] unicodeCopy = new int[encryptedMessage.length()];
+        String source = encryptedMessage.trim().toUpperCase();
 
-        for (int count = 0; count < encryptedMessage.length(); count++) {
-            sourceText[count] = encryptedMessage.charAt(count);
+        char[] sourceText = new char[source.length()];
+        int[] unicode = new int[source.length()];
+        int[] unicodeCopy = new int[source.length()];
+
+        for (int count = 0; count < source.length(); count++) {
+            sourceText[count] = source.charAt(count);
         }
 
         String hex;
@@ -44,7 +46,12 @@ public class ShiftCracker {
         StringBuilder builder = new StringBuilder();
 
         for (int shift = 1; shift <= 25; shift++) {
-            builder.append(smartShift(shift, unicode, unicodeCopy));
+            String smartShifted = smartShift(shift, unicode, unicodeCopy);
+            if (smartShifted != null){
+                builder.append(smartShifted);
+                builder.append("\n");
+            }
+
         }
 
         return builder.toString();
@@ -52,7 +59,7 @@ public class ShiftCracker {
 
     public class Port {
         public String decrypt(String encryptedMessage) {
-            return decrypt(encryptedMessage);
+            return ShiftCracker.this.decrypt(encryptedMessage);
         }
     }
 

@@ -8,6 +8,15 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+test {
+    useJUnitPlatform()
+}
+
 task build_jar(type: Jar) {
     project.archivesBaseName = "shift_cracker"
 
